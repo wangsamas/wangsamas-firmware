@@ -1,0 +1,26 @@
+Petunjuk penggunaan:
+
+1. 	Install Arduino IDE
+	Dapatkan Arduino IDE terbaru di sini:
+	http://arduino.cc/en/Main/Software
+	Anda butuh setidaknya 1.0 untuk PCB berbasis Atmel AVR dan 1.5 untuk PCB berbasis ARM.
+2. 	Pastikan semua serial driver terpasang pada PCB. Arduino IDE mengandung penanda driver untuk PCB Arduino.
+	Mungkin Anda butuh driver yang berbeda tergantung PCB Anda. Untuk Linux dan Mac terkadang tidak perlu tambahan driver.
+	Jika belum jelas, tanya pemasok printer/PCB Anda driver mana yang Anda butuhkan.
+3.	Beberapa PCB bukan PCB Arduino asli tidak 100% cocok, butuh tambahan terpisah ke Arduino IDE. Install juga
+4.	Mulai Arduino IDE dan buka berkas "Wangsamas.ino"	
+5.	Pilih PCB dan port untuk upload di Arduino IDE.
+6.	Buka Configuration.h, baca petunjuk apakah ada yang perlu diperiksa atau dimodifikasi agar cocok dengan printer anda
+7.	Upload Wangsamas Firmware dengan tombol upload (Panah ke kanan di toolbar)
+
+Jika Anda menggunakan PCB mega 2560 yang normal atau cocok, Anda bisa gunakan codeblocks untuk Arduino selain Arduino IDE:
+http://arduinodev.com/codeblocks/
+Buka berkas Wangsamas.cbp dan mulai dengan nomor 6.
+
+PETUNJUK: Jika Anda menyalakan EEPROM, upload pertama akan menyalin data dari configuration.h ke EEPROM. 
+Upload berikutnya TIDAK akan menimpa data EEPROM. 
+Untuk mengubah nilai, hubungkan printer menggunakan repetier host dan buka pengubah EEPROM.
+Jalan lain adalah dengan mengirim perintah M502 M500 untuk menyalin nilai baru ke EEPROM.
+
+PENTING UNTUK BEBERAPA PENGGUNA
+Ada tambahan berkas AdditionalArduinoFiles dengan readme yang terpisah yang menjelaskan bagaimana agar watchdog bekerja.
