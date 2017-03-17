@@ -1289,12 +1289,14 @@ uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y)
 
 uint8_t ScaraInverseKinematics(float x, float y, float &a, float &b)
 {
-	double tempA, tempB, tempC; 
-	tempA = acos((x * x + y * y - Printer::sqArm - Printer::sqFarm)/(2 * Printer::ArmLength * Printer::ForearmLength));		// Kusuma SCARA
-	b = tempA * 57.29577951472;														// Kusuma SCARA
-	tempB = Printer::ForearmLength * sin(tempA);
-	tempC = Printer::ArmLength + Printer::ForearmLength * cos(tempA);
-	a = (atan2(y,x) - atan2(tempB, tempC))*57.29577951472;
+	double tempA, tempB, tempC, tempD, tempE; 
+	tempA = x * x + y * y - Printer::sqArm - Printer::sqFarm;		// Kusuma SCARA
+	tempB = 2 * Printer::ArmLength * Printer::ForearmLength;
+	tempC = tempA / tempB;
+	b = acos(tempC) * 57.29577951472;														// Kusuma SCARA
+	tempD = Printer::ForearmLength * sqrt(tempB * tempB - tempA * tempA) / tempB;
+	tempE = Printer::ArmLength + Printer::ForearmLength * tempC;
+	a = (atan2(y,x) - atan2(tempD, tempE))*57.29577951472;
 	if(a<0) a+= 360;
 	return 1;
 }
@@ -1311,12 +1313,14 @@ uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y)
 
 uint8_t ScaraInverseKinematics(float x, float y, float &a, float &b)
 {
-	double tempA, tempB, tempC; 
-	tempA = acos((x * x + y * y - Printer::sqArm - Printer::sqFarm)/(2 * Printer::ArmLength * Printer::ForearmLength));		// Kusuma SCARA
-	b = tempA * 57.29577951472;														// Kusuma SCARA
-	tempB = Printer::ForearmLength * sin(tempA);
-	tempC = Printer::ArmLength + Printer::ForearmLength * cos(tempA);
-	a = (atan2(y,x) - atan2(tempB, tempC))*57.29577951472;
+	double tempA, tempB, tempC, tempD, tempE; 
+	tempA = x * x + y * y - Printer::sqArm - Printer::sqFarm;		// Kusuma SCARA
+	tempB = 2 * Printer::ArmLength * Printer::ForearmLength;
+	tempC = tempA / tempB;
+	b = acos(tempC) * 57.29577951472;														// Kusuma SCARA
+	tempD = Printer::ForearmLength * sqrt(tempB * tempB - tempA * tempA) / tempB;
+	tempE = Printer::ArmLength + Printer::ForearmLength * tempC;
+	a = (atan2(y,x) - atan2(tempD, tempE))*57.29577951472;
 	if(a<0) a+= 360;
 	b = b + a;														// Kusuma SCARA
 	return 1;
