@@ -1311,13 +1311,14 @@ uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y)
 
 uint8_t ScaraInverseKinematics(float x, float y, float &a, float &b)
 {
-	double tempA, tempB, tempC;
-	tempA = (x*x + y*y + Printer::sqArm - Printer::sqFarm) / (2*Printer::ArmLength);
-	tempB = atan2(y,x);
-	tempC = sqrt(x*x + y*y);
-	a = (acos(tempA/tempC) - tempB);
-	b = 57.29577951472 * atan2((y-Printer::ArmLength*sin(a)),(x-Printer::ArmLength*cos(a)));
-	a = 57.29577951472 * a;
+	double tempA, tempB, tempC; 
+	tempA = acos((x * x + y * y - Printer::sqArm - Printer::sqFarm)/(2 * Printer::ArmLength * Printer::ForearmLength));		// Kusuma SCARA
+	b = tempA * 57.29577951472;														// Kusuma SCARA
+	tempB = Printer::ForearmLength * sin(tempA);
+	tempC = Printer::ArmLength + Printer::ForearmLength * cos(tempA);
+	a = (atan2(y,x) - atan2(tempB, tempC))*57.29577951472;
+	if(a<0) a+= 360;
+	b = b + a;														// Kusuma SCARA
 	return 1;
 }
 #endif
