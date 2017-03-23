@@ -1202,7 +1202,7 @@ void Commands::processGCode(GCode *com) {
             break;
 #endif
 #endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA 	// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA 	// Kusuma SCARA
 		case 5:				// Kusuma SCARA, Rotate Arm Sample G5 X10 Y20 means rotate shoulder 10 degree elbow 20 degree
 		{
 			int32_t rotX = com->X * Printer::axisStepsPerUnit[X_AXIS];
@@ -1216,8 +1216,6 @@ void Commands::processGCode(GCode *com) {
 			com->X = com->Y = 0;
 		}
 		break;
-#endif
-#if DRIVE_SYSTEM == SCARA 	// Kusuma SCARA
 		case 50:
 		{
 			if(com->hasP())
@@ -1524,8 +1522,6 @@ void Commands::processGCode(GCode *com) {
 			}	
 		}
 		break;
-#endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA 	// Kusuma SCARA
         case 58: { //G58 All Go To Endstops
 #if defined(SUPPORT_LASER) && SUPPORT_LASER
 				bool oldLaser = LaserDriver::laserOn;

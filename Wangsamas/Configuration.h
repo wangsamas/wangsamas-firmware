@@ -36,7 +36,8 @@ You should have received a copy of the GNU General Public License
 along with Wangsamas-Firmware.  If not, see <http://www.gnu.org/licenses/>.
 
 This firmware is based on Repetier-Firmware which based on sprinter firmware
-which based on Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
+which based on Tonokip RepRap firmw
+are rewrite based off of Hydra-mmm firmware.
 
 */
 #ifndef CONFIGURATION_H
@@ -49,7 +50,8 @@ which based on Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 #define MOTHERBOARD 33            // 33 untuk Arduino Mega 2560 dengan RAMPS 1.3/1.4, lihat pins.h untuk PCB lainnya
 #include "pins.h"
 
-#define DRIVE_SYSTEM 6            // Cartesian 0, Delta 3, Paralel Scara 6, Single Scara 7
+#define DRIVE_SYSTEM 7            // Cartesian 0, Delta 3, Scara 7
+#define SCARA_TYPE SINGLE		  // If drive system = scara -> choose SINGLE, PARALEL
 #define FEATURE_CONTROLLER 2      // 2 untuk smart controller LCD 2004, 11 untuk Reprap Graphic LCD, lihat wangsamas.h untuk LCD display lainnya
 #define DEFAULT_PRINTER_MODE 0
 
@@ -123,7 +125,7 @@ which based on Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 #define Z_HOME_DIR -1										// Ganti -1 atau 1 jika arah menuju endstop Z terbalik
 
 #define DELTA_HOME_ON_POWER 0								// 1 untuk menuju home ketika printer menyala, 0 untuk diam ketika printer menyala
-#define HOMING_ORDER HOME_ORDER_ZXY
+#define HOMING_ORDER HOME_ORDER_ZYX
 //#define SOFTWARE_LEVELING
 
 #define MIN_HARDWARE_ENDSTOP_X true								// True Jika Endstop berada pada posisi X minimum, false jika tidak
@@ -135,10 +137,10 @@ which based on Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 
 #define min_software_endstop_x false							// True jika ingin X minimum dibatasi software, false jika tidak
 #define min_software_endstop_y true								// True jika ingin Y minimum dibatasi software, false jika tidak
-#define min_software_endstop_z true								// True jika ingin Z minimum dibatasi software, false jika tidak
+#define min_software_endstop_z false								// True jika ingin Z minimum dibatasi software, false jika tidak
 #define max_software_endstop_x true								// True jika ingin X MAXimum dibatasi software, false jika tidak
 #define max_software_endstop_y false							// True jika ingin Y MAXimum dibatasi software, false jika tidak
-#define max_software_endstop_z false							// True jika ingin Z MAXimum dibatasi software, false jika tidak
+#define max_software_endstop_z true							// True jika ingin Z MAXimum dibatasi software, false jika tidak
 #define max_software_endstop_r true
 
 #define ENDSTOP_X_MIN_INVERTING false
@@ -163,7 +165,7 @@ which based on Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 #define ENDSTOP_Z_RETEST_REDUCTION_FACTOR 3
 #define ENDSTOP_X_BACK_ON_HOME 0
 #define ENDSTOP_Y_BACK_ON_HOME 0
-#define ENDSTOP_Z_BACK_ON_HOME 0
+#define ENDSTOP_Z_BACK_ON_HOME 5
 #define ALWAYS_CHECK_ENDSTOPS 1
 
 #define STEP_COUNTER
@@ -186,12 +188,15 @@ which based on Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 
 // #################### Z-Probing #####################
 
+#define DISTORTION_CORRECTION 0     // Menyesuaikan ketidakrataan papan 
+#define FEATURE_AUTOLEVEL 0         // Menyesuaikan kemiringan papan
+#define FEATURE_Z_PROBE 0           // Z probe harus aktif untuk distortion correction & autolevel  
+#define Z_PROBE_PIN ORIG_Z_MAX_PIN  
+
 #define Z_PROBE_Z_OFFSET 0
 #define Z_PROBE_Z_OFFSET_MODE 0
 #define UI_BED_COATING 1
-#define FEATURE_Z_PROBE 1
 #define Z_PROBE_BED_DISTANCE 10
-#define Z_PROBE_PIN ORIG_Z_MIN_PIN
 #define Z_PROBE_PULLUP 1
 #define Z_PROBE_ON_HIGH 1
 #define Z_PROBE_X_OFFSET 0
@@ -206,7 +211,6 @@ which based on Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 #define Z_PROBE_FINISHED_SCRIPT ""
 #define Z_PROBE_REQUIRES_HEATING 0
 #define Z_PROBE_MIN_TEMPERATURE 150
-#define FEATURE_AUTOLEVEL 1
 #define Z_PROBE_X1 -70
 #define Z_PROBE_Y1 -70
 #define Z_PROBE_X2 70
@@ -231,7 +235,6 @@ which based on Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 #define AXISCOMP_TANYZ 0
 #define AXISCOMP_TANXZ 0
 
-#define DISTORTION_CORRECTION 1
 #define DISTORTION_CORRECTION_POINTS 7
 #define DISTORTION_CORRECTION_R 100
 #define DISTORTION_PERMANENT 1

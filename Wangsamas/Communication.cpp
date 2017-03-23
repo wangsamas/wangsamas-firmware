@@ -50,7 +50,7 @@ uint8_t Com::selectedLanguage;
 #define MACHINE_TYPE "Delta"
 #elif DRIVE_SYSTEM == CARTESIAN
 #define MACHINE_TYPE "Mendel"
-#elif DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA		// Kusuma SCARA
+#elif DRIVE_SYSTEM == SCARA		// Kusuma SCARA
 #define MACHINE_TYPE "Kusuma"	// Kusuma SCARA
 #else
 #define MACHINE_TYPE "Core_XY"
@@ -344,7 +344,7 @@ FSTRINGVALUE(Com::tEPRAccelerationFactorAtTop,"Acceleration factor at top [%,100
 FSTRINGVALUE(Com::tEPRSegmentsPerSecondPrint,"Segments/s for printing")
 FSTRINGVALUE(Com::tEPRSegmentsPerSecondTravel,"Segments/s for travel")
 #endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA															// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA															// Kusuma SCARA
 FSTRINGVALUE(Com::tArmLength,"Arm length (mm):")									// Kusuma SCARA
 FSTRINGVALUE(Com::tForearmLength,"Forearm length (mm):")							// Kusuma SCARA
 FSTRINGVALUE(Com::tShoulderMinAngle,"Shoulder minimum angle (deg):")				// Kusuma SCARA

@@ -38,7 +38,6 @@ bagian GCodes
 - G31 - Tulis signal pada sensor periksa
 - G32 S<0..2> P<0..1> - Autolevel papan cetak. S = 1 ukur tinggi Z, S = 2 ukur dan simpan tinggi Z baru
 - G50 Rute kalibrasi SCARA
-- G58 - Tutup Tangan / Semua sumbu menuju endstop [Untuk SCARA & Paralel SCARA]
 - G90 - Gunakan koordinat pasti
 - G91 - Gunakan koordinat relatif
 - G92 - Tetapkan posisi sekarang ke koordinat yang diberikan
@@ -178,7 +177,6 @@ Implemented Codes
 - G31 - Write signal of probe sensor
 - G32 S<0..2> P<0..1> - Autolevel print bed. S = 1 measure zLength, S = 2 Measure and store new zLength
 - G50 SCARA calibration route
-- G58 - Close Arm / All Axis go to endstop [For SCARA & Paralel SCARA]
 - G90 - Use absolute coordinates
 - G91 - Use relative coordinates
 - G92 - Set current position to coordinates given

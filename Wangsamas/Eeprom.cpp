@@ -346,7 +346,7 @@ void EEPROM::restoreEEPROMSettingsFromConfiguration()
 
 }
 
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 void EEPROM::storeScaraDataIntoEEPROM(uint8_t corrupted) // Kusuma SCARA
 {
 	HAL::eprSetFloat(EPR_FOREARM_LENGTH,Printer::ForearmLength);
@@ -518,7 +518,7 @@ void EEPROM::initalizeUncached()
     HAL::eprSetInt16(EPR_DELTA_SEGMENTS_PER_SECOND_PRINT,DELTA_SEGMENTS_PER_SECOND_PRINT);
     HAL::eprSetInt16(EPR_DELTA_SEGMENTS_PER_SECOND_MOVE,DELTA_SEGMENTS_PER_SECOND_MOVE);
 	#endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA														// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA														// Kusuma SCARA
     HAL::eprSetFloat(EPR_ARM_LENGTH,ARM_LENGTH);								// Kusuma SCARA
     HAL::eprSetFloat(EPR_FOREARM_LENGTH,FOREARM_LENGTH);						// Kusuma SCARA
     HAL::eprSetFloat(EPR_SHOULDER_MIN_ANGLE,SHOULDER_MIN_ANGLE);				// Kusuma SCARA
@@ -694,7 +694,7 @@ void EEPROM::readDataFromEEPROM(bool includeExtruder)
     }
     if(version != EEPROM_PROTOCOL_VERSION)
     {
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA														// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA														// Kusuma SCARA
     HAL::eprSetFloat(EPR_ARM_LENGTH,ARM_LENGTH);								// Kusuma SCARA
     HAL::eprSetFloat(EPR_FOREARM_LENGTH,FOREARM_LENGTH);						// Kusuma SCARA
     HAL::eprSetFloat(EPR_SHOULDER_MIN_ANGLE,SHOULDER_MIN_ANGLE);				// Kusuma SCARA
@@ -911,7 +911,7 @@ void EEPROM::writeSettings()
     writeLong(EPR_MAX_INACTIVE_TIME, Com::tEPRMaxInactiveTime);
     writeLong(EPR_STEPPER_INACTIVE_TIME, Com::tEPRStopAfterInactivty);
 //#define EPR_ACCELERATION_TYPE 1
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA														// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA														// Kusuma SCARA
     writeFloat(EPR_ARM_LENGTH, Com::tArmLength);								// Kusuma SCARA
     writeFloat(EPR_FOREARM_LENGTH, Com::tForearmLength);						// Kusuma SCARA
     writeFloat(EPR_SHOULDER_MIN_ANGLE, Com::tShoulderMinAngle);					// Kusuma SCARA

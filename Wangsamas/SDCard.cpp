@@ -196,7 +196,7 @@ void SDCard::stopPrint()
     Printer::setMenuMode(MENU_MODE_SD_PRINTING,false);
     Printer::setMenuMode(MENU_MODE_SD_PAUSED,false);
     GCode::executeFString(PSTR(SD_RUN_ON_STOP));
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 			Printer::closeArm(true, true, true);
 #endif
     if(SD_STOP_HEATER_AND_MOTORS_ON_STOP) {

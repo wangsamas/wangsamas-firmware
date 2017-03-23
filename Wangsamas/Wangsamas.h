@@ -96,11 +96,13 @@ usage or for searching for memory induced errors. Switch it off for production, 
 #define DELTA 3
 #define TUGA 4
 #define BIPOD 5
-#define PSCARA 6 // Kusuma SCARA
 #define SCARA 7 // Kusuma SCARA
 #define XZ_GANTRY 8
 #define ZX_GANTRY 9
 #define GANTRY_FAKE 10
+
+#define SINGLE 1
+#define PARALEL 2
 
 #define WIZARD_STACK_SIZE 8
 #define IGNORE_COORDINATE 999999
@@ -348,7 +350,7 @@ inline void memcopy4(void *dest,void *source) {
 #define UI_SPEEDDEPENDENT_POSITIONING true
 #endif
 
-#if DRIVE_SYSTEM==DELTA || DRIVE_SYSTEM==TUGA || DRIVE_SYSTEM==BIPOD || DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA || defined(FAST_COREXYZ)	// Kusuma SCARA
+#if DRIVE_SYSTEM==DELTA || DRIVE_SYSTEM==TUGA || DRIVE_SYSTEM==BIPOD || DRIVE_SYSTEM==SCARA || defined(FAST_COREXYZ)	// Kusuma SCARA
 #define NONLINEAR_SYSTEM 1
 #else
 #define NONLINEAR_SYSTEM 0
@@ -882,7 +884,7 @@ void manage_inactivity(uint8_t debug);
 
 extern void finishNextSegment();
 
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA								// Kusuma Scara
+#if DRIVE_SYSTEM == SCARA								// Kusuma Scara
 extern uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y);		// Kusuma Scara
 extern uint8_t ScaraInverseKinematics(float x, float y, float &a, float &b);		// Kusuma Scara
 extern uint8_t TransformToScaraCenter(float tempx1, float tempy1, float &tempx2, float &tempy2);	// Kusuma SCARA

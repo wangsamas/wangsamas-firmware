@@ -379,7 +379,7 @@ public:
 #endif
     }
 #endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA										// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA										// Kusuma SCARA
     static inline float armLength() {							// Kusuma SCARA
 #if EEPROM_MODE != 0											// Kusuma SCARA
         return HAL::eprGetFloat(EPR_ARM_LENGTH);				// Kusuma SCARA

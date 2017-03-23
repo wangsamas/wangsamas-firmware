@@ -349,7 +349,7 @@ public:
     static int32_t destinationSteps[E_AXIS_ARRAY];         ///< Target position in steps.
     static float extrudeMultiplyError; ///< Accumulated error during extrusion
     static float extrusionFactor; ///< Extrusion multiply factor
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA				// Kusuma Scara
+#if DRIVE_SYSTEM == SCARA				// Kusuma Scara
 	static float ArmLength;				// Kusuma Scara
 	static float ForearmLength;			// Kusuma Scara
 	static float sqArm;					// Kusuma Scara
@@ -401,7 +401,7 @@ public:
 #if FEATURE_Z_PROBE || MAX_HARDWARE_ENDSTOP_Z || NONLINEAR_SYSTEM
     static int32_t stepsRemainingAtZHit;
 #endif
-#if DRIVE_SYSTEM == DELTA || DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA // Kusuma SCARA
+#if DRIVE_SYSTEM == DELTA || DRIVE_SYSTEM == SCARA // Kusuma SCARA
     static int32_t stepsRemainingAtXHit;
     static int32_t stepsRemainingAtYHit;
 #endif
@@ -1142,7 +1142,7 @@ public:
     static void updateAdvanceFlags();
     static void setup();
     static void defaultLoopActions();
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
     static void ShoulderGoToEndstop(float feedrate);	// Kusuma SCARA
     static void ElbowGoToEndstop(float feedrate);		// Kusuma SCARA
     static void AllGoToEndstop();						// Kusuma SCARA

@@ -107,7 +107,7 @@ ufast8_t PrintLine::linesWritePos = 0;            ///< Position where we write t
 volatile ufast8_t PrintLine::linesCount = 0;      ///< Number of lines cached 0 = nothing to do.
 ufast8_t PrintLine::linesPos = 0;                 ///< Position for executing line movement.
 
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 void PrintLine::rotateInSteps(int32_t x, int32_t y, float feedrate, bool waitEnd, bool checkEndstop,bool pathOptimize)	// Kusuma SCARA
 {
 	float savedFeedrate = Printer::feedrate;
@@ -1248,7 +1248,7 @@ uint8_t transformCartesianStepsToDeltaSteps(int32_t cartesianPosSteps[], int32_t
 }
 #endif
 
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA														// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA																			// Kusuma SCARA
 uint8_t transformCartesianStepsToDeltaSteps(int32_t cartesianPosSteps[], int32_t scaraPosSteps[])
 {
 	float tempa = cartesianPosSteps[X_AXIS]*Printer::invaxisStepsPerUnit[X_AXIS];
@@ -1276,12 +1276,14 @@ uint8_t transformScaraStepsToCartesianSteps(int32_t scaraPosSteps[], int32_t car
 	cartesianPosSteps[E_AXIS] = scaraPosSteps[E_AXIS];
 	return 1;
 }
-#endif
-#if DRIVE_SYSTEM == SCARA
+
 uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y)
 {
 	double tempA = a / 57.29577951472;															// Kusuma SCARA
 	double tempB = b / 57.29577951472;															// Kusuma SCARA
+#if SCARA_TYPE == PARALEL
+	b = b - a;
+#endif
 	x = (Printer::ArmLength * cos(tempA) + Printer::ForearmLength * cos( tempA + tempB ));	// Kusuma SCARA
 	y = (Printer::ArmLength * sin(tempA) + Printer::ForearmLength * sin( tempA + tempB ));	// Kusuma SCARA
 	return 1;
@@ -1290,43 +1292,20 @@ uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y)
 uint8_t ScaraInverseKinematics(float x, float y, float &a, float &b)
 {
 	double tempA, tempB, tempC, tempD, tempE; 
-	tempA = x * x + y * y - Printer::sqArm - Printer::sqFarm;		// Kusuma SCARA
+	tempA = x * x + y * y - Printer::sqArm - Printer::sqFarm;
 	tempB = 2 * Printer::ArmLength * Printer::ForearmLength;
-	tempC = tempA / tempB;
-	b = acos(tempC) * 57.29577951472;														// Kusuma SCARA
-	tempD = Printer::ForearmLength * sqrt(tempB * tempB - tempA * tempA) / tempB;
-	tempE = Printer::ArmLength + Printer::ForearmLength * tempC;
+	tempC = sqrt(tempB * tempB - tempA * tempA);
+	tempD = Printer::ForearmLength * tempC / tempB;
+	tempE = Printer::ArmLength + Printer::ForearmLength * tempA / tempB;
 	a = (atan2(y,x) - atan2(tempD, tempE))*57.29577951472;
+	b = acos(tempA / tempB) * 57.29577951472;	
 	if(a<0) a+= 360;
-	return 1;
-}
+#if SCARA_TYPE == PARALEL
+	b = b + a;
 #endif
-#if DRIVE_SYSTEM == PSCARA
-uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y)
-{
-	double tempA = a / 57.29577951472;															// Kusuma SCARA
-	double tempB = b / 57.29577951472;															// Kusuma SCARA
-	x = (Printer::ArmLength * cos(tempA) + Printer::ForearmLength * cos(tempB));	// Kusuma SCARA
-	y = (Printer::ArmLength * sin(tempA) + Printer::ForearmLength * sin(tempB));	// Kusuma SCARA
 	return 1;
 }
 
-uint8_t ScaraInverseKinematics(float x, float y, float &a, float &b)
-{
-	double tempA, tempB, tempC, tempD, tempE; 
-	tempA = x * x + y * y - Printer::sqArm - Printer::sqFarm;		// Kusuma SCARA
-	tempB = 2 * Printer::ArmLength * Printer::ForearmLength;
-	tempC = tempA / tempB;
-	b = acos(tempC) * 57.29577951472;														// Kusuma SCARA
-	tempD = Printer::ForearmLength * sqrt(tempB * tempB - tempA * tempA) / tempB;
-	tempE = Printer::ArmLength + Printer::ForearmLength * tempC;
-	a = (atan2(y,x) - atan2(tempD, tempE))*57.29577951472;
-	if(a<0) a+= 360;
-	b = b + a;														// Kusuma SCARA
-	return 1;
-}
-#endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA														// Kusuma SCARA
 uint8_t TransformToScaraCenter(float tempx1, float tempy1, float &tempx2, float &tempy2)	// Kusuma SCARA
 {																		// Kusuma SCARA
 	tempx2 = tempx1 + Printer::BedCenterXpos;									// Kusuma SCARA
@@ -1340,6 +1319,7 @@ uint8_t TransformToBedCenter(float tempx1, float tempy1, float &tempx2, float &t
 	tempy2 = tempy1 - Printer::BedCenterYpos;									// Kusuma SCARA
 	return 1;															// Kusuma SCARA
 }																		// Kusuma SCARA
+
 #endif																	// Kusuma SCARA
 
 #if DRIVE_SYSTEM == DELTA
@@ -1713,7 +1693,7 @@ bool NonlinearSegment::checkEndstops(PrintLine *cur, bool checkall)
 		// endstops are per motor and do not depend on global axis movement
         if(isXPositiveMove() && Endstops::xMax())
         {
-#if DRIVE_SYSTEM == DELTA || DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == DELTA || DRIVE_SYSTEM == SCARA
             if(Printer::stepsRemainingAtXHit < 0)
                 Printer::stepsRemainingAtXHit = cur->stepsRemaining;
 #endif
@@ -1723,7 +1703,7 @@ bool NonlinearSegment::checkEndstops(PrintLine *cur, bool checkall)
         }
         if(isYPositiveMove() && Endstops::yMax())
         {
-#if DRIVE_SYSTEM == DELTA || DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == DELTA || DRIVE_SYSTEM == SCARA
             if(Printer::stepsRemainingAtYHit < 0)
                 Printer::stepsRemainingAtYHit = cur->stepsRemaining;
 #endif
@@ -1734,7 +1714,7 @@ bool NonlinearSegment::checkEndstops(PrintLine *cur, bool checkall)
 #if DRIVE_SYSTEM != DELTA
         if(isXNegativeMove() && Endstops::xMin())
         {
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
             if(Printer::stepsRemainingAtXHit < 0)
                 Printer::stepsRemainingAtXHit = cur->stepsRemaining;
 #endif
@@ -1744,7 +1724,7 @@ bool NonlinearSegment::checkEndstops(PrintLine *cur, bool checkall)
         }
         if(isYNegativeMove() && Endstops::yMin())
         {
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
             if(Printer::stepsRemainingAtYHit < 0)
                 Printer::stepsRemainingAtYHit = cur->stepsRemaining;
 #endif
@@ -1765,6 +1745,10 @@ bool NonlinearSegment::checkEndstops(PrintLine *cur, bool checkall)
         }
 		if(isZNegativeMove() && Endstops::zMin())
 		{
+#if MIN_HARDWARE_ENDSTOP_Z
+            if(Printer::stepsRemainingAtZHit)
+                Printer::stepsRemainingAtZHit = cur->stepsRemaining;
+#endif
 			setZMoveFinished();
 			cur->setZMoveFinished();
 			r++;
@@ -1978,7 +1962,7 @@ inline uint16_t PrintLine::calculateNonlinearSubSegments(uint8_t softEndstop)
 #endif
                     d->deltaSteps[i] = static_cast<uint16_t>(delta);
                 }
-                else
+                else if (delta < 0)
                 {
                     d->setMoveOfAxis(i);
 #ifdef DEBUG_DELTA_OVERFLOW
@@ -2100,7 +2084,7 @@ inline void PrintLine::queueEMove(int32_t extrudeDiff,uint8_t check_endstops,uin
     p->calculateMove(axisDistanceInUnit,pathOptimize,E_AXIS);
 }
 
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 uint8_t PrintLine::queueRotation(uint8_t check_endstops,uint8_t pathOptimize, uint8_t softEndstop)	// Kusuma SCARA
 {
 	EVENT_CONTRAIN_DESTINATION_COORDINATES

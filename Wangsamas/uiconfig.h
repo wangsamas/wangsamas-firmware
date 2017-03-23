@@ -382,7 +382,7 @@ Type 3: Show menu action. These actions have a _MENU_ in their name. If they are
 // after that assign the desired codes.
 //#define UI_MATRIX_ACTIONS {2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015}
 // Define your matrix actions
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA	// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA	// Kusuma SCARA
 #define UI_MATRIX_ACTIONS {UI_ACTION_HOME_ALL, UI_ACTION_TOP_MENU,       UI_ACTION_SET_ORIGIN,      UI_ACTION_NEXT,\
                            UI_ACTION_HOME_Z,   UI_ACTION_MENU_ZPOS,      UI_ACTION_COOLDOWN,        UI_ACTION_OK,\
                            UI_ACTION_MENU_Y_ANGLE_FAST,   UI_ACTION_MENU_YPOSFAST,  UI_ACTION_PREHEAT_ABS,     UI_ACTION_PREVIOUS,\

@@ -344,7 +344,7 @@ FSTRINGVAR(tEPRTowerXOffset)
 FSTRINGVAR(tEPRTowerYOffset)
 FSTRINGVAR(tEPRTowerZOffset)
 #endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA			// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA			// Kusuma SCARA
 FSTRINGVAR(tArmLength)				// Kusuma SCARA
 FSTRINGVAR(tForearmLength)			// Kusuma SCARA
 FSTRINGVAR(tShoulderMinAngle)		// Kusuma SCARA

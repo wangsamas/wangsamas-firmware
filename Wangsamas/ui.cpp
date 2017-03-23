@@ -1565,7 +1565,7 @@ void UIDisplay::parse(const char *txt,bool ram)
                 addFloat(dist, 6, 1);
             }
             break;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
         case 'v':														// Kusuma SCARA
             if(c2>='0' && c2<='1')										
             {
@@ -2658,7 +2658,7 @@ bool UIDisplay::nextPreviousAction(int16_t next, bool allowMoves)
     case UI_ACTION_FANSPEED:
         Commands::setFanSpeed(Printer::getFanSpeed() + increment * 3, true);
         break;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
     case UI_ACTION_XROTATION_NOTEST:				// Kusuma SCARA
         if(!allowMoves) return false;				// Kusuma SCARA
 #if UI_SPEEDDEPENDENT_POSITIONING					// Kusuma SCARA
@@ -2956,7 +2956,7 @@ ZPOS2:
         break;
 #endif
 
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
     case UI_ACTION_X_STEP:
     case UI_ACTION_Y_STEP:
     case UI_ACTION_Z_STEP:
@@ -3189,7 +3189,7 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
         case UI_ACTION_EMERGENCY_STOP:
             Commands::emergencyStop();
             break;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
         case UI_ACTION_CLOSE_ARM:										// Kusuma SCARA
             if(!allowMoves) return UI_ACTION_CLOSE_ARM;					// Kusuma SCARA
             Printer::closeArm(true, true, true);						// Kusuma SCARA
@@ -3203,7 +3203,7 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
             break;
         case UI_ACTION_HOME_X:
             if(!allowMoves) return UI_ACTION_HOME_X;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 			Printer::homeXAxis();
 #else
 			Printer::homeAxis(true, false, false);
@@ -3212,7 +3212,7 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
             break;
         case UI_ACTION_HOME_Y:
             if(!allowMoves) return UI_ACTION_HOME_Y;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 			Printer::homeYAxis();
 #else
             Printer::homeAxis(false, true, false);
@@ -3221,14 +3221,14 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
             break;
         case UI_ACTION_HOME_Z:
             if(!allowMoves) return UI_ACTION_HOME_Z;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 			Printer::homeZAxis();
 #else
             Printer::homeAxis(false, false, true);
 #endif
             Commands::printCurrentPosition(PSTR("UI_ACTION_HOME_Z "));
             break;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
         case UI_ACTION_ENDSTOP_X:
             if(!allowMoves) return UI_ACTION_ENDSTOP_X;
             Printer::ShoulderGoToEndstop(Printer::homingFeedrate[X_AXIS]);
@@ -3383,7 +3383,7 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
 #if EEPROM_MODE != 0
         case UI_ACTION_STORE_EEPROM:
             EEPROM::storeDataIntoEEPROM(false);
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
             EEPROM::storeScaraDataIntoEEPROM(false);
 #endif
             pushMenu(&ui_menu_eeprom_saved, false);
@@ -3475,7 +3475,7 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
             Printer::flag2 ^= PRINTER_FLAG2_IGNORE_M106_COMMAND;
             break;
 #endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
         case UI_ACTION_MENU_X_ANGLE:				// Kusuma SCARA
             pushMenu(&ui_menu_x_angle, false);		// Kusuma SCARA
             break;									// Kusuma SCARA
@@ -3525,7 +3525,7 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
         case UI_ACTION_MENU_MOVE_Z:
             pushMenu(&ui_menu_move_z_pos, false);
             break;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
         case UI_ACTION_MENU_ROTATE_X:
             pushMenu(&ui_menu_rot_x_pos, false);
             break;
@@ -3678,7 +3678,7 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
         }
 #endif
         break;
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
         case UI_ACTION_SET_SHOULDER_ORIGIN:
         {
             Printer::updateCurrentPosition();
@@ -3734,7 +3734,7 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
         }
         break;
 #endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
         case UI_ACTION_SET_BED_CENTER:
         {
       		Printer::ShoulderBedCenterAngle = Printer::currentNonlinearPositionSteps[X_AXIS]* Printer::invaxisStepsPerUnit[X_AXIS];

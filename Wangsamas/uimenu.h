@@ -557,7 +557,7 @@ UI_WIZARD2_T(ui_wiz_jamreheat, UI_ACTION_WIZARD_JAM_REHEAT, UI_TEXT_WIZ_REHEAT1_
 // **** Positions submenus
 
 #if UI_ROWS >= 4
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA	// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA	// Kusuma SCARA
 UI_MENU_ACTION4_T(ui_menu_x_angle, UI_ACTION_XROTATION, UI_TEXT_ACTION_XROTATION4A_ID, UI_TEXT_ACTION_XROTATION4B_ID, UI_TEXT_ACTION_XROTATION4C_ID, UI_TEXT_ACTION_XROTATION4D_ID)
 UI_MENU_ACTION4_T(ui_menu_y_angle, UI_ACTION_YROTATION, UI_TEXT_ACTION_YROTATION4A_ID, UI_TEXT_ACTION_YROTATION4B_ID, UI_TEXT_ACTION_YROTATION4C_ID, UI_TEXT_ACTION_YROTATION4D_ID)
 UI_MENU_ACTION4_T(ui_menu_xangle_notest, UI_ACTION_XROTATION_NOTEST, UI_TEXT_ACTION_XROTATION4A_ID, UI_TEXT_ACTION_XROTATION4B_ID, UI_TEXT_ACTION_XROTATION4C_ID, UI_TEXT_ACTION_XROTATION4D_ID)
@@ -577,7 +577,7 @@ UI_MENU_ACTION4_T(ui_menu_zpos_fast, UI_ACTION_ZPOSITION_FAST, UI_TEXT_ACTION_ZP
 UI_MENU_ACTION4_T(ui_menu_zpos_fast_notest, UI_ACTION_ZPOSITION_FAST_NOTEST, UI_TEXT_ACTION_ZPOSITION_FAST4A_ID, UI_TEXT_ACTION_ZPOSITION_FAST4B_ID, UI_TEXT_ACTION_ZPOSITION_FAST4C_ID, UI_TEXT_ACTION_ZPOSITION_FAST4D_ID)
 UI_MENU_ACTION4_T(ui_menu_epos, UI_ACTION_EPOSITION, UI_TEXT_ACTION_EPOSITION_FAST2A_ID, UI_TEXT_ACTION_EPOSITION_FAST2B_ID, UI_TEXT_PAGE_EXTRUDER_ID, UI_TEXT_METER_PRINTED_ID)
 #else
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA	// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA	// Kusuma SCARA
 UI_MENU_ACTION2_T(ui_menu_x_angle, UI_ACTION_XROTATION, UI_TEXT_ACTION_XROTATION2A_ID, UI_TEXT_ACTION_XROTATION2B_ID)
 UI_MENU_ACTION2_T(ui_menu_y_angle, UI_ACTION_YROTATION, UI_TEXT_ACTION_YROTATION2A_ID, UI_TEXT_ACTION_YROTATION2B_ID)
 UI_MENU_ACTION2_T(ui_menu_xangle_notest, UI_ACTION_XROTATION_NOTEST, UI_TEXT_ACTION_XROTATION2A_ID, UI_TEXT_ACTION_XROTATION2B_ID)
@@ -607,7 +607,7 @@ UI_MENU_ACTIONCOMMAND_FILTER_T(ui_menu_home_all, UI_TEXT_HOME_ALL_ID, UI_ACTION_
 UI_MENU_ACTIONCOMMAND_FILTER_T(ui_menu_home_x, UI_TEXT_HOME_X_ID, UI_ACTION_HOME_X, 0, MENU_MODE_PRINTING)
 UI_MENU_ACTIONCOMMAND_FILTER_T(ui_menu_home_y, UI_TEXT_HOME_Y_ID, UI_ACTION_HOME_Y, 0, MENU_MODE_PRINTING)
 UI_MENU_ACTIONCOMMAND_FILTER_T(ui_menu_home_z, UI_TEXT_HOME_Z_ID, UI_ACTION_HOME_Z, 0, MENU_MODE_PRINTING)
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA														// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA																	// Kusuma SCARA
 UI_MENU_ACTIONSELECTOR_T(ui_menu_rotate_x, UI_TEXT_X_ANGLE_POS_ID, ui_menu_x_angle)	// Kusuma SCARA
 UI_MENU_ACTIONSELECTOR_T(ui_menu_rotate_y, UI_TEXT_Y_ANGLE_POS_ID, ui_menu_y_angle)	// Kusuma SCARA
 UI_MENU_ACTIONSELECTOR_T(ui_menu_rotate_x_notest, UI_TEXT_X_ANGLE_POS_ID, ui_menu_xangle_notest)
@@ -619,7 +619,7 @@ UI_MENU_ACTIONSELECTOR_T(ui_menu_go_zpos, UI_TEXT_Z_POSITION_ID, ui_menu_zpos)
 UI_MENU_ACTIONSELECTOR_T(ui_menu_go_zpos_notest, UI_TEXT_Z_POSITION_ID, ui_menu_zpos_notest)
 UI_MENU_ACTIONSELECTOR_T(ui_menu_go_epos, UI_TEXT_E_POSITION_ID, ui_menu_epos)
 #if !UI_SPEEDDEPENDENT_POSITIONING
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA																// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA																		// Kusuma SCARA
 UI_MENU_ACTIONSELECTOR_T(ui_menu_rotate_x_fast, UI_TEXT_X_ANGLE_FAST_ID, ui_menu_x_angle_fast)	// Kusuma SCARA
 UI_MENU_ACTIONSELECTOR_T(ui_menu_rotate_y_fast, UI_TEXT_Y_ANGLE_FAST_ID, ui_menu_y_angle_fast)	// Kusuma SCARA
 UI_MENU_ACTIONSELECTOR_T(ui_menu_rotate_xfast_notest, UI_TEXT_X_ANGLE_FAST_ID, ui_menu_xangle_fast_notest)
@@ -630,7 +630,7 @@ UI_MENU_ACTIONSELECTOR_T(ui_menu_go_yfast, UI_TEXT_Y_POS_FAST_ID, ui_menu_ypos_f
 UI_MENU_ACTIONSELECTOR_T(ui_menu_go_zfast, UI_TEXT_Z_POS_FAST_ID, ui_menu_zpos_fast)
 UI_MENU_ACTIONSELECTOR_T(ui_menu_go_zfast_notest, UI_TEXT_Z_POS_FAST_ID, ui_menu_zpos_fast_notest)
 #define UI_SPEED 2
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 #define UI_SPEED_X_ROTATION &ui_menu_rotate_x_fast,&ui_menu_rotate_x_notest,	// Kusuma SCARA
 #define UI_SPEED_Y_ROTATION &ui_menu_rotate_y_fast,&ui_menu_rotate_y_notest,	// Kusuma SCARA
 #define UI_SPEED_ROT_X_NOTEST &ui_menu_rotate_xfast_notest,&ui_menu_rotate_x_notest,  // Kusuma SCARA
@@ -642,7 +642,7 @@ UI_MENU_ACTIONSELECTOR_T(ui_menu_go_zfast_notest, UI_TEXT_Z_POS_FAST_ID, ui_menu
 #define UI_SPEED_Z_NOTEST &ui_menu_go_zfast_notest,&ui_menu_go_zpos_notest,
 #else
 #define UI_SPEED 1
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 #define UI_SPEED_X_ROTATION &ui_menu_rotate_x_notest, // Kusuma SCARA
 #define UI_SPEED_Y_ROTATION &ui_menu_rotate_y_notest, // Kusuma SCARA
 #define UI_SPEED_ROT_X_NOTEST &ui_menu_rotate_x_notest,  // Kusuma SCARA
@@ -662,7 +662,7 @@ UI_MENU(ui_menu_offsets, UI_MENU_OFFSETS, UI_MENU_BACKCNT + 3)
 UI_MENU_SUBMENU_T(ui_menu_go_offsets, UI_TEXT_OFFSETS_ID, ui_menu_offsets)
 
 // **** Scara calibration menu  Kusuma SCARA
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 UI_MENU_ACTIONCOMMAND_T(ui_menu_set_shoulder_origin, UI_TEXT_SET_SHOULDER_ORIGIN_ID, UI_ACTION_SET_SHOULDER_ORIGIN)
 #define UI_MENU_SHOULDER {UI_MENU_ADDCONDBACK &ui_menu_home_all, UI_SPEED_ROT_X_NOTEST &ui_menu_set_shoulder_origin}
 UI_MENU(ui_menu_shoulder, UI_MENU_SHOULDER, 2 + UI_SPEED + UI_MENU_BACKCNT)
@@ -949,7 +949,7 @@ UI_MENU(ui_menu_bedconf, UI_MENU_BEDCONF, 3)
 #endif
 #endif
 
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA					// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA					// Kusuma SCARA
 #define UI_MENU_SHOULDER_COND ,&ui_menu_conf_shoulder
 #define UI_MENU_SHOULDER_CNT 1
 UI_MENU_SUBMENU_T(ui_menu_conf_shoulder, UI_TEXT_SHOULDER_CALIB_ID, ui_menu_shoulder)
@@ -1149,7 +1149,7 @@ UI_MENU_ACTIONCOMMAND_T(ui_menu_ext_ditto3, UI_TEXT_DITTO_3_ID, UI_DITTO_3)
 
 // Move sub menu
 
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 #define UI_MENU_ROTY {UI_MENU_ADDCONDBACK &ui_menu_rot_y_fast,&ui_menu_rotate_yfast_notest,&ui_menu_rotate_y_notest,&ui_endstop_y,&ui_menu_set_elbow_origin,&ui_menu_set_bed_center}
 UI_MENU(ui_menu_rot_y_pos, UI_MENU_ROTY, 6 + UI_MENU_BACKCNT)
 UI_MENU_SUBMENU_T(ui_menu_rot_y, UI_TEXT_ROTY_ID, ui_menu_rot_y_pos)
@@ -1248,7 +1248,7 @@ UI_MENU(ui_speed_menu, UI_SPEED_MENU_ID, 2 + UI_MENU_BACKCNT + UI_MENU_FAN_CNT)
 UI_MENU(ui_adjust_menu, UI_ADJUST_MENU_ID, UI_MENU_BACKCNT + BABY_CNT + UI_MENU_COATING_CNT)
 #define UI_MENU_FILM_MENU_ID {UI_MENU_ADDCONDBACK &ui_menu_temp, &ui_menu_preheat, &ui_menu_quick_cooldown UI_CHANGE_FIL_ENT, &ui_menu_go_epos, &ui_menu_ext_origin UI_TOOGLE_LIGHT_ENTRY UI_MENU_BEDCOND UI_DITTO_COMMANDS}
 UI_MENU(ui_film_menu, UI_MENU_FILM_MENU_ID, 5 + UI_MENU_BACKCNT +  UI_CHANGE_FIL_CNT + UI_MENU_BEDCNT + UI_TOGGLE_LIGHT_COUNT + UI_DITTO_COMMANDS_COUNT)
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 #define UI_MENU_MOVE_ID {UI_MENU_ADDCONDBACK &ui_menu_home_all, &ui_menu_move_x, &ui_menu_move_y, &ui_menu_move_z, &ui_menu_rot_x, &ui_menu_rot_y, &ui_menu_step_cal, &ui_menu_bed_off SERVOPOS_ENTRY}
 UI_MENU(ui_move_menu, UI_MENU_MOVE_ID, 8 + UI_MENU_BACKCNT  + SERVOPOS_COUNT)
 #else
@@ -1257,7 +1257,7 @@ UI_MENU(ui_move_menu, UI_MENU_MOVE_ID, 6 + UI_MENU_BACKCNT + SERVOPOS_COUNT)
 #endif
 #define UI_MENU_CONFIGURATION {UI_MENU_ADDCONDBACK &ui_menu_conf_general LANGMENU_ENTRY ,&ui_menu_conf_accel,&ui_menu_conf_feed,&ui_menu_debugging,&ui_menu_conf_extr UI_MENU_BEDCONF_COND UI_MENU_EEPROM_COND UI_MENU_SL_COND}
 UI_MENU(ui_menu_configuration, UI_MENU_CONFIGURATION, UI_MENU_BACKCNT + LANGMENU_COUNT + UI_MENU_EEPROM_CNT + UI_MENU_BEDCONF_CNT + UI_MENU_SL_CNT + 5)
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA
+#if DRIVE_SYSTEM == SCARA
 #define UI_MENU_SWITCH_OFF_ID {UI_MENU_ADDCONDBACK &ui_close_arm, &ui_menu_quick_stopstepper, &ui_menu_quick_power}
 UI_MENU(ui_menu_switch_off, UI_MENU_SWITCH_OFF_ID, 3 + UI_MENU_BACKCNT) 
 #else 

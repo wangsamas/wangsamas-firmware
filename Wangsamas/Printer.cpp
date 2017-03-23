@@ -126,7 +126,7 @@ int32_t Printer::realDeltaPositionSteps[TOWER_ARRAY];
 int16_t Printer::travelMovesPerSecond;
 int16_t Printer::printMovesPerSecond;
 #endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA											// Kusuma Scara
+#if DRIVE_SYSTEM == SCARA											// Kusuma Scara
 float Printer::ArmLength = ARM_LENGTH;				// Kusuma Scara
 float Printer::ForearmLength = FOREARM_LENGTH;			// Kusuma Scara
 float Printer::sqArm;					// Kusuma Scara
@@ -153,7 +153,7 @@ float Printer::deltaCPosY;
 #if FEATURE_Z_PROBE || MAX_HARDWARE_ENDSTOP_Z || NONLINEAR_SYSTEM
 int32_t Printer::stepsRemainingAtZHit;
 #endif
-#if DRIVE_SYSTEM == DELTA || DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA // Kusuma SCARA
+#if DRIVE_SYSTEM == DELTA || DRIVE_SYSTEM == SCARA // Kusuma SCARA
 int32_t Printer::stepsRemainingAtXHit;
 int32_t Printer::stepsRemainingAtYHit;
 #endif
@@ -401,7 +401,7 @@ bool Printer::isPositionAllowed(float x,float y,float z)
 #if DRIVE_SYSTEM == DELTA
     allowed &= (z >= 0) && (z <= zLength + 0.05 + ENDSTOP_Z_BACK_ON_HOME);
     allowed &= (x * x + y * y <= deltaMaxRadiusSquared);
-#elif DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA																				// Kusuma SCARA
+#elif DRIVE_SYSTEM == SCARA																				// Kusuma SCARA
 	if(!isHoming()){																					// Kusuma SCARA
 	    allowed = allowed && (z >= 0) && (z <= zLength + 0.05 + ENDSTOP_Z_BACK_ON_HOME);				// Kusuma SCARA
 		float tempX, tempY, tempA, tempB;																// Kusuma SCARA
@@ -473,7 +473,7 @@ void Printer::updateDerivedParameter()
 	if(travelMovesPerSecond < 15) travelMovesPerSecond = 15; // lower values make no sense and can cause serious problems
 	if(printMovesPerSecond < 15) printMovesPerSecond = 15;
 #endif
-#if DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA					// Kusuma SCARA
+#if DRIVE_SYSTEM == SCARA					// Kusuma SCARA
     ArmLength = EEPROM::armLength();								// Kusuma SCARA
     ForearmLength = EEPROM::forearmLength();						// Kusuma SCARA
     sqArm = ArmLength* ArmLength;									// Kusuma SCARA
@@ -1462,7 +1462,6 @@ void Printer::homeAxis(bool xaxis,bool yaxis,bool zaxis) // Delta homing code
     Commands::printCurrentPosition(PSTR("homeAxis "));
     setAutolevelActive(autoLevel);
 }
-
 #elif DRIVE_SYSTEM == SCARA									// Kusuma SCARA
 void Printer::ShoulderGoToEndstop(float feedrate)
 {
@@ -1524,11 +1523,15 @@ void Printer::homeZAxis()
     long steps;
     if ((MIN_HARDWARE_ENDSTOP_Z && Z_MIN_PIN > -1 && Z_HOME_DIR == -1) || (MAX_HARDWARE_ENDSTOP_Z && Z_MAX_PIN > -1 && Z_HOME_DIR == 1))
     {
+        setHoming(true);
 		coordinateOffset[Z_AXIS] = 0;
         UI_STATUS_UPD_F(Com::translatedF(UI_TEXT_HOME_Z_ID));
         steps = (zMaxSteps - zMinSteps) * Z_HOME_DIR;
-        currentPositionSteps[Z_AXIS] = -steps;
-        setHoming(true);
+#if MIN_HARDWARE_ENDSTOP_Z
+        currentPositionSteps[Z_AXIS] = zMaxSteps;
+#else
+        currentPositionSteps[Z_AXIS] = zMinSteps;
+#endif	
 		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
         PrintLine::moveRelativeDistanceInSteps(0,0,2 * steps,0,homingFeedrate[Z_AXIS],true,true);
         currentPositionSteps[Z_AXIS] = (Z_HOME_DIR == -1) ? zMinSteps : zMaxSteps;
@@ -1567,252 +1570,138 @@ void Printer::homeZAxis()
 }
 void Printer::homeAxis(bool xaxis,bool yaxis,bool zaxis) // SCARA
 {
-	bool nocheck = isNoDestinationCheck();
-	setNoDestinationCheck(true);
-#if defined(SUPPORT_LASER) && SUPPORT_LASER
-	bool oldLaser = LaserDriver::laserOn;
-	LaserDriver::laserOn = false;
+    setHomed(true);
+#if !defined(HOMING_ORDER)
+#define HOMING_ORDER HOME_ORDER_ZYX
 #endif
-    bool autoLevel = isAutolevelActive();
-    setAutolevelActive(false);
-	PrintLine::moveRelativeDistanceInSteps(0,0,2 * (zMaxSteps - zMinSteps) * Z_HOME_DIR,0,homingFeedrate[Z_AXIS],true,true);
-	ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
-	ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
-#if MAX_HARDWARE_ENDSTOP_X
-	PrintLine::rotateInSteps(- X_HOME_DIR * (Printer::ShoulderMaxAngle - Printer::ShoulderBedCenterAngle) * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#if HOMING_ORDER == HOME_ORDER_XYZ
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+    if(zaxis) homeZAxis();
+#if MAX_HARDWARE_ENDSTOP_Y
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowMaxAngle - Printer::ElbowBedCenterAngle) * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
 #else
-	PrintLine::rotateInSteps(- X_HOME_DIR * (Printer::ShoulderBedCenterAngle - Printer::ShoulderMinAngle)* axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowBedCenterAngle - Printer::ElbowMinAngle)* axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#endif
+#if MAX_HARDWARE_ENDSTOP_X
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderMaxAngle - Printer::ShoulderBedCenterAngle) * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderBedCenterAngle - Printer::ShoulderMinAngle)* axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#endif
+#elif HOMING_ORDER == HOME_ORDER_XZY
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+    if(zaxis) homeZAxis();
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+#if MAX_HARDWARE_ENDSTOP_Y
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowMaxAngle - Printer::ElbowBedCenterAngle) * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowBedCenterAngle - Printer::ElbowMinAngle)* axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#endif
+#if MAX_HARDWARE_ENDSTOP_X
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderMaxAngle - Printer::ShoulderBedCenterAngle) * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderBedCenterAngle - Printer::ShoulderMinAngle)* axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#endif
+#elif HOMING_ORDER == HOME_ORDER_YXZ
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+    if(zaxis) homeZAxis();
+#if MAX_HARDWARE_ENDSTOP_X
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderMaxAngle - Printer::ShoulderBedCenterAngle) * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderBedCenterAngle - Printer::ShoulderMinAngle)* axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
 #endif
 #if MAX_HARDWARE_ENDSTOP_Y
-	PrintLine::rotateInSteps(0, - Y_HOME_DIR * (Printer::ElbowMaxAngle - Printer::ElbowBedCenterAngle) * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowMaxAngle - Printer::ElbowBedCenterAngle) * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
 #else
-	PrintLine::rotateInSteps(0, - Y_HOME_DIR * (Printer::ElbowBedCenterAngle - Printer::ElbowMinAngle)* axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowBedCenterAngle - Printer::ElbowMinAngle)* axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
 #endif
-	homeZAxis();
+#elif HOMING_ORDER == HOME_ORDER_YZX
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+    if(zaxis) homeZAxis();
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+#if MAX_HARDWARE_ENDSTOP_X
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderMaxAngle - Printer::ShoulderBedCenterAngle) * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderBedCenterAngle - Printer::ShoulderMinAngle)* axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#endif
+#if MAX_HARDWARE_ENDSTOP_Y
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowMaxAngle - Printer::ElbowBedCenterAngle) * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowBedCenterAngle - Printer::ElbowMinAngle)* axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#endif
+#elif HOMING_ORDER == HOME_ORDER_ZXY
+    if(zaxis) homeZAxis();
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+#if MAX_HARDWARE_ENDSTOP_Y
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowMaxAngle - Printer::ElbowBedCenterAngle) * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowBedCenterAngle - Printer::ElbowMinAngle)* axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#endif
+#if MAX_HARDWARE_ENDSTOP_X
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderMaxAngle - Printer::ShoulderBedCenterAngle) * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderBedCenterAngle - Printer::ShoulderMinAngle)* axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#endif
+#elif HOMING_ORDER == HOME_ORDER_ZYX
+    if(zaxis) homeZAxis();
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+#if MAX_HARDWARE_ENDSTOP_X
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderMaxAngle - Printer::ShoulderBedCenterAngle) * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(- X_HOME_DIR * (Printer::ShoulderBedCenterAngle - Printer::ShoulderMinAngle)* axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#endif
+#if MAX_HARDWARE_ENDSTOP_Y
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowMaxAngle - Printer::ElbowBedCenterAngle) * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#else
+	PrintLine::rotateInStepsNoCheck(0, - Y_HOME_DIR * (Printer::ElbowBedCenterAngle - Printer::ElbowMinAngle)* axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
+#endif
+#endif
+    updateCurrentPosition(true);
 	currentPositionSteps[X_AXIS] = currentPositionSteps[Y_AXIS] = 0;
 	transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
 	updateCurrentPosition();
     UI_CLEAR_STATUS
     Commands::printCurrentPosition(PSTR("homeAxis "));
-    setAutolevelActive(autoLevel);
-#if defined(SUPPORT_LASER) && SUPPORT_LASER
-	LaserDriver::laserOn = oldLaser;
-#endif
-	updateCurrentPosition(true);
-    setNoDestinationCheck(nocheck);
-}															// Kusuma SCARA
-void Printer::closeArm(bool xaxis,bool yaxis,bool zaxis)
-{
-	bool nocheck = isNoDestinationCheck();
-	setNoDestinationCheck(true);
-#if defined(SUPPORT_LASER) && SUPPORT_LASER
-	bool oldLaser = LaserDriver::laserOn;
-	LaserDriver::laserOn = false;
-#endif
-    bool autoLevel = isAutolevelActive();
-    setAutolevelActive(false);
-	PrintLine::moveRelativeDistanceInSteps(0,0,2 * (zMaxSteps - zMinSteps) * Z_HOME_DIR,0,homingFeedrate[Z_AXIS],true,true);
-	ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
-	ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
-//	AllGoToEndstop();
-#if MAX_HARDWARE_ENDSTOP_X
-	PrintLine::rotateInSteps(- X_HOME_DIR * 3 * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
-#else
-	PrintLine::rotateInSteps(- X_HOME_DIR * 3 * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
-#endif
-#if MAX_HARDWARE_ENDSTOP_Y
-	PrintLine::rotateInSteps(0, - Y_HOME_DIR * 3 * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
-#else
-	PrintLine::rotateInSteps(0, - Y_HOME_DIR * 3 * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
-#endif
-#if MAX_HARDWARE_ENDSTOP_Z
-    PrintLine::moveRelativeDistanceInSteps(0,0,-zMaxSteps,0,homingFeedrate[Z_AXIS],true,true);
-#endif
-	updateCurrentPosition();
-    UI_CLEAR_STATUS
-    Commands::printCurrentPosition(PSTR("homeAxis "));
-    setAutolevelActive(autoLevel);
-#if defined(SUPPORT_LASER) && SUPPORT_LASER
-	LaserDriver::laserOn = oldLaser;
-#endif
-	updateCurrentPosition(true);
-    setNoDestinationCheck(nocheck);
-}															// Kusuma SCARA
+}
 
-#elif DRIVE_SYSTEM == PSCARA 									// Kusuma SCARA
-void Printer::ShoulderGoToEndstop(float feedrate)
-{
-	if (X_HOME_DIR == -1)
-		currentNonlinearPositionSteps[X_AXIS] = xMaxSteps;
-	else
-		currentNonlinearPositionSteps[X_AXIS] = xMinSteps;
-	Printer::stepsRemainingAtXHit = -1;
-	Commands::waitUntilEndOfAllMoves();
-	setHoming(true);
-	PrintLine::rotateInStepsNoCheck(X_HOME_DIR * xMaxSteps * 1.5 ,0,feedrate, true, true, false);
-    offsetX = 0;
-	if (X_HOME_DIR == -1)
-		currentNonlinearPositionSteps[X_AXIS] = xMinSteps;
-	else
-		currentNonlinearPositionSteps[X_AXIS] = xMaxSteps;
-	transformScaraStepsToCartesianSteps(currentNonlinearPositionSteps, currentPositionSteps);
-	Printer::updateCurrentPosition(true);
-    setHoming(false);
-}
-void Printer::ElbowGoToEndstop(float feedrate)
-{
-	if (Y_HOME_DIR == -1)
-		currentNonlinearPositionSteps[Y_AXIS] = yMaxSteps;
-	else
-		currentNonlinearPositionSteps[Y_AXIS] = yMinSteps;
-	Printer::stepsRemainingAtYHit = -1;
-	Commands::waitUntilEndOfAllMoves();
-	setHoming(true);
-	PrintLine::rotateInStepsNoCheck(0,Y_HOME_DIR * yMaxSteps * 1.5,feedrate, true, true, false);
-    offsetY = 0;
-	if (Y_HOME_DIR == -1)
-		currentNonlinearPositionSteps[Y_AXIS] = yMinSteps;
-	else
-		currentNonlinearPositionSteps[Y_AXIS] = yMaxSteps;
-	transformScaraStepsToCartesianSteps(currentNonlinearPositionSteps, currentPositionSteps);
-	Printer::updateCurrentPosition(true);
-    setHoming(false);
-}
-void Printer::AllGoToEndstop()
-{
-	ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
-	ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
-	homeZAxis();
-	Printer::updateCurrentPosition(true);
-}
-void Printer::homeXAxis()
-{
-	Printer::moveToReal(0,IGNORE_COORDINATE,IGNORE_COORDINATE,IGNORE_COORDINATE,Printer::homingFeedrate[X_AXIS]);
-	Printer::updateCurrentPosition(true);
-}
-void Printer::homeYAxis()
-{
-	Printer::moveToReal(IGNORE_COORDINATE,0,IGNORE_COORDINATE,IGNORE_COORDINATE,Printer::homingFeedrate[Y_AXIS]);
-	Printer::updateCurrentPosition(true);
-}
-void Printer::homeZAxis()
-{
-    long steps;
-    if ((MIN_HARDWARE_ENDSTOP_Z && Z_MIN_PIN > -1 && Z_HOME_DIR == -1) || (MAX_HARDWARE_ENDSTOP_Z && Z_MAX_PIN > -1 && Z_HOME_DIR == 1))
-    {
-		coordinateOffset[Z_AXIS] = 0;
-        UI_STATUS_UPD_F(Com::translatedF(UI_TEXT_HOME_Z_ID));
-        steps = (zMaxSteps - zMinSteps) * Z_HOME_DIR;
-        currentPositionSteps[Z_AXIS] = -steps;
-        setHoming(true);
-		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
-        PrintLine::moveRelativeDistanceInSteps(0,0,2 * steps,0,homingFeedrate[Z_AXIS],true,true);
-        currentPositionSteps[Z_AXIS] = (Z_HOME_DIR == -1) ? zMinSteps : zMaxSteps;
-		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
-        PrintLine::moveRelativeDistanceInSteps(0,0,axisStepsPerUnit[Z_AXIS] * -ENDSTOP_Z_BACK_MOVE * Z_HOME_DIR,0,homingFeedrate[Z_AXIS] / ENDSTOP_Z_RETEST_REDUCTION_FACTOR,true,false);
-#if defined(ZHOME_WAIT_UNSWING) && ZHOME_WAIT_UNSWING > 0
-        HAL::delayMilliseconds(ZHOME_WAIT_UNSWING);
-#endif
-		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
-        PrintLine::moveRelativeDistanceInSteps(0,0,axisStepsPerUnit[Z_AXIS] * 2 * ENDSTOP_Z_BACK_MOVE * Z_HOME_DIR,0,homingFeedrate[Z_AXIS] / ENDSTOP_Z_RETEST_REDUCTION_FACTOR,true,true);
-        setHoming(false);
-		int32_t zCorrection = 0;
-#if Z_HOME_DIR < 0 && MIN_HARDWARE_ENDSTOP_Z && FEATURE_Z_PROBE && Z_PROBE_PIN == Z_MIN_PIN
-		// Fix error from z probe testing
-		zCorrection -= axisStepsPerUnit[Z_AXIS]*EEPROM::zProbeHeight();
-#endif		
-#if defined(ENDSTOP_Z_BACK_ON_HOME)
-		// If we want to go up a bit more for some reason
-        if(ENDSTOP_Z_BACK_ON_HOME > 0)
-			zCorrection -= axisStepsPerUnit[Z_AXIS] * ENDSTOP_Z_BACK_ON_HOME * Z_HOME_DIR;
-#endif
-#if Z_HOME_DIR < 0
-		// Fix bed coating
-		zCorrection += axisStepsPerUnit[Z_AXIS] * Printer::zBedOffset;
-#else
-		currentPositionSteps[Z_AXIS] -= zBedOffset * axisStepsPerUnit[Z_AXIS]; // Correct bed coating	
-#endif
-        PrintLine::moveRelativeDistanceInSteps(0,0,zCorrection,0,homingFeedrate[Z_AXIS],true,false);
-        currentPositionSteps[Z_AXIS] = ((Z_HOME_DIR == -1) ? zMinSteps : zMaxSteps - Printer::zBedOffset * axisStepsPerUnit[Z_AXIS]);
-#if NUM_EXTRUDER > 0
-        currentPositionSteps[Z_AXIS] -= Extruder::current->zOffset;
-#endif
-		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
-		Printer::updateCurrentPosition();
-    }
-}
-void Printer::homeAxis(bool xaxis,bool yaxis,bool zaxis) // SCARA
-{
-	bool nocheck = isNoDestinationCheck();
-	setNoDestinationCheck(true);
-#if defined(SUPPORT_LASER) && SUPPORT_LASER
-	bool oldLaser = LaserDriver::laserOn;
-	LaserDriver::laserOn = false;
-#endif
-    bool autoLevel = isAutolevelActive();
-    setAutolevelActive(false);
-	ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
-	ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
-#if MAX_HARDWARE_ENDSTOP_Y
-	PrintLine::rotateInSteps(0, - Y_HOME_DIR * (Printer::ElbowMaxAngle - Printer::ElbowBedCenterAngle) * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
-#else
-	PrintLine::rotateInSteps(0, - Y_HOME_DIR * (Printer::ElbowBedCenterAngle - Printer::ElbowMinAngle)* axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
-#endif
-#if MAX_HARDWARE_ENDSTOP_X
-	PrintLine::rotateInSteps(- X_HOME_DIR * (Printer::ShoulderMaxAngle - Printer::ShoulderBedCenterAngle) * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
-#else
-	PrintLine::rotateInSteps(- X_HOME_DIR * (Printer::ShoulderBedCenterAngle - Printer::ShoulderMinAngle)* axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
-#endif
-	homeZAxis();
-	currentPositionSteps[X_AXIS] = currentPositionSteps[Y_AXIS] = 0;
-	transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
-	updateCurrentPosition();
-    UI_CLEAR_STATUS
-    Commands::printCurrentPosition(PSTR("homeAxis "));
-    setAutolevelActive(autoLevel);
-#if defined(SUPPORT_LASER) && SUPPORT_LASER
-	LaserDriver::laserOn = oldLaser;
-#endif
-	updateCurrentPosition(true);
-    setNoDestinationCheck(nocheck);
-}															// Kusuma SCARA
 void Printer::closeArm(bool xaxis,bool yaxis,bool zaxis)
 {
-	bool nocheck = isNoDestinationCheck();
-	setNoDestinationCheck(true);
-#if defined(SUPPORT_LASER) && SUPPORT_LASER
-	bool oldLaser = LaserDriver::laserOn;
-	LaserDriver::laserOn = false;
+    setHomed(true);
+#if !defined(HOMING_ORDER)
+#define HOMING_ORDER HOME_ORDER_ZYX
 #endif
-    bool autoLevel = isAutolevelActive();
-    setAutolevelActive(false);
-	ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
-	ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
-	homeZAxis();
-//	AllGoToEndstop();
-#if MAX_HARDWARE_ENDSTOP_X
-	PrintLine::rotateInSteps(- X_HOME_DIR * 3 * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
-#else
-	PrintLine::rotateInSteps(- X_HOME_DIR * 3 * axisStepsPerUnit[X_AXIS],0,homingFeedrate[X_AXIS], true, true, false);
+#if HOMING_ORDER == HOME_ORDER_XYZ
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+    if(zaxis) homeZAxis();
+#elif HOMING_ORDER == HOME_ORDER_XZY
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+    if(zaxis) homeZAxis();
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+#elif HOMING_ORDER == HOME_ORDER_YXZ
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+    if(zaxis) homeZAxis();
+#elif HOMING_ORDER == HOME_ORDER_YZX
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+    if(zaxis) homeZAxis();
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+#elif HOMING_ORDER == HOME_ORDER_ZXY
+    if(zaxis) homeZAxis();
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+#elif HOMING_ORDER == HOME_ORDER_ZYX
+    if(zaxis) homeZAxis();
+    if(yaxis) ElbowGoToEndstop(homingFeedrate[Y_AXIS]);
+    if(xaxis) ShoulderGoToEndstop(homingFeedrate[X_AXIS]);
 #endif
-#if MAX_HARDWARE_ENDSTOP_Y
-	PrintLine::rotateInSteps(0, - Y_HOME_DIR * 3 * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
-#else
-	PrintLine::rotateInSteps(0, - Y_HOME_DIR * 3 * axisStepsPerUnit[Y_AXIS],homingFeedrate[Y_AXIS], true, true, false);
-#endif
-#if MAX_HARDWARE_ENDSTOP_Z
-    PrintLine::moveRelativeDistanceInSteps(0,0,-zMaxSteps,0,homingFeedrate[Z_AXIS],true,true);
-#endif
-	updateCurrentPosition();
+    updateCurrentPosition(true);
     UI_CLEAR_STATUS
     Commands::printCurrentPosition(PSTR("homeAxis "));
-    setAutolevelActive(autoLevel);
-#if defined(SUPPORT_LASER) && SUPPORT_LASER
-	LaserDriver::laserOn = oldLaser;
-#endif
-	updateCurrentPosition(true);
-    setNoDestinationCheck(nocheck);
-}															// Kusuma SCARA
+}
 
 #else
 #if DRIVE_SYSTEM == TUGA  // Tuga printer homing
@@ -2809,7 +2698,7 @@ void Printer::showJSONStatus(int type) {
             Com::printF(PSTR("coreXY"));
 #elif (DRIVE_SYSTEM == XZ_GANTRY)
             Com::printF(PSTR("coreXZ"));
-#elif (DRIVE_SYSTEM == SCARA || DRIVE_SYSTEM == PSCARA)			// Kusuma SCARA
+#elif (DRIVE_SYSTEM == SCARA)			// Kusuma SCARA
             Com::printF(PSTR("SCARA"));	// Kusuma SCARA
 #endif
             Com::printF(PSTR("\",\"name\":\""));
