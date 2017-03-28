@@ -26,6 +26,44 @@ If you have a normal mega 2560 compatible board, you can use codeblocks for ardu
 http://arduinodev.com/codeblocks/
 Open the Wangsamas.cbp file instead of the ino file and start with 6.
 
+MOTHERBOARD LIST
+3D Master pin assignment = 12
+Arduino Diecimila AVR_ATmega168 = 0
+Arduino Mega RAMPS_V_1_3 = 33
+Arduino Mega RAMPS_V_1_3 AZTEEG_X3 = 34
+Arduino Mega RAMPS_V_1_3 AZTEEG_X3_PRO =35
+Duemilanove w/ ATMega328P pin assignment = 4
+FELIXprinters = 101
+Gen3 PLUS for RepRap Motherboard V1.2 AVR_ATmega644P = 3
+Gen6 deluxe assignment = 51
+Gen6 pin assignment = 5
+Gen7 1.1 and above pin assignment 7
+Gen7 1.4.1 pin assignment 71
+MegaTronics = 70
+MegaTronics v2.0 = 701
+MegaTronics v3.0 = 703
+Melzi pin assignment = 63
+Minitronics v1.0 = 702
+NOOOOOO RS485/EXTRUDER CONTROLLER AVR_ATmega644P = 2
+OpenHardware.co.za FrontPrint Controller 1.0 = 73
+PiBot = 314
+PiBot_V_1_6, PiBot_HD_VERSION "Rev1.6" = 315
+PiBot_V_2_0, PiBot_HD_VERSION "Rev2.0" = 316
+Printrboard Rev. B pin assingments (ATMEGA90USB1286) = 9
+Printrboard Rev. F pin assingments (ATMEGA90USB1286) = 92
+RAMBo Pin Assignments = 301
+RUMBA pin assignment = 80
+Sanguino/RepRap Motherboard with direct-drive extruders AVR_ATmega644P = 1
+Sanguinololu pin assignment = 6
+SANGUINOLOLU_V_1_2 = 62
+SANGUINOLOLU_V_1_2 AZTEEG_X1 = 65
+Sanguish Beta pin assignment = 501
+Sethi 3D_1 Extruder = 72
+Teensylu 0.7 pin assingments (ATMEGA90USB) = 8
+Ultimaker Shield pin assignment v1.5.7 = 37
+Unique One rev. A pin assingments (ATMEGA90USB) = 88
+
+
 HINT: It you have enabled eeprom support, the first upload will copy the configurations into the eeprom. Later
 uploads will NOT overwrite these settings! Connect with Repetier-Host to your printer and open the eeprom editor
 to change these values. Alternatively, send the commands
