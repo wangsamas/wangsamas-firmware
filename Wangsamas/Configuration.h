@@ -53,7 +53,7 @@ are rewrite based off of Hydra-mmm firmware.
 #define DRIVE_SYSTEM 7            // Cartesian 0, Delta 3, Scara 7
 #define SCARA_TYPE SINGLE		  // If drive system = scara -> choose SINGLE, PARALEL
 #define FEATURE_CONTROLLER 2      // 2 untuk smart controller LCD 2004, 11 untuk Reprap Graphic LCD, lihat wangsamas.h untuk LCD display lainnya
-#define DEFAULT_PRINTER_MODE 0
+#define DEFAULT_PRINTER_MODE 0	  // 3D Printer 0, Laser 1, CNC 2
 
 #define X_MAX_LENGTH 100			// Panjang maximum sumbu X
 #define Y_MAX_LENGTH 100			// Panjang maximum sumbu Y
@@ -120,9 +120,9 @@ are rewrite based off of Hydra-mmm firmware.
 
 // ################ Endstop configuration #####################
 
-#define X_HOME_DIR -1										// Ganti -1 atau 1 jika arah menuju endstop X terbalik
-#define Y_HOME_DIR 1										// Ganti -1 atau 1 jika arah menuju endstop Y terbalik
-#define Z_HOME_DIR -1										// Ganti -1 atau 1 jika arah menuju endstop Z terbalik
+#define X_HOME_DIR -1										// X MIN Hardware endstop -1, X MAX Hardware endstop 1
+#define Y_HOME_DIR 1										// Y MIN Hardware endstop -1, Y MAX Hardware endstop 1
+#define Z_HOME_DIR -1										// Z MIN Hardware endstop -1, Z MAX Hardware endstop 1
 
 #define DELTA_HOME_ON_POWER 0								// 1 untuk menuju home ketika printer menyala, 0 untuk diam ketika printer menyala
 #define HOMING_ORDER HOME_ORDER_ZYX							// Urutan sumbu menuju endstop X, Y, Z sesuai keinginan
