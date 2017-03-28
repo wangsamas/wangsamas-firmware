@@ -47,7 +47,7 @@ are rewrite based off of Hydra-mmm firmware.
 #define UI_PRINTER_COMPANY "Wangsamas"
 
 #define NUM_EXTRUDER 1
-#define MOTHERBOARD 33            // 33 untuk Arduino Mega 2560 dengan RAMPS 1.3/1.4, lihat pins.h untuk PCB lainnya
+#define MOTHERBOARD 33            // 33 untuk Arduino Mega 2560 dengan RAMPS 1.3/1.4, lihat BACAini, README atau pins.h untuk PCB lainnya
 #include "pins.h"
 
 #define DRIVE_SYSTEM 7            // Cartesian 0, Delta 3, Scara 7
@@ -125,7 +125,7 @@ are rewrite based off of Hydra-mmm firmware.
 #define Z_HOME_DIR -1										// Ganti -1 atau 1 jika arah menuju endstop Z terbalik
 
 #define DELTA_HOME_ON_POWER 0								// 1 untuk menuju home ketika printer menyala, 0 untuk diam ketika printer menyala
-#define HOMING_ORDER HOME_ORDER_ZYX
+#define HOMING_ORDER HOME_ORDER_ZYX							// Urutan sumbu menuju endstop X, Y, Z sesuai keinginan
 //#define SOFTWARE_LEVELING
 
 #define MIN_HARDWARE_ENDSTOP_X true								// True Jika Endstop berada pada posisi X minimum, false jika tidak

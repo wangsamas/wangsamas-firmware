@@ -125,6 +125,9 @@ void PrintLine::rotateInSteps(int32_t x, int32_t y, float feedrate, bool waitEnd
         Com::printWarningFLN(PSTR("rotateInSteps / queueDeltaMove returns error"));
     }
     Printer::feedrate = savedFeedrate;
+#if SCARA_TYPE == PARALEL
+	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
+#endif
     transformScaraStepsToCartesianSteps(Printer::currentNonlinearPositionSteps, Printer::currentPositionSteps);
 	Printer::updateCurrentPosition();
     if(waitEnd)
@@ -145,6 +148,9 @@ void PrintLine::rotateInStepsNoCheck(int32_t x, int32_t y, float feedrate, bool 
         Com::printWarningFLN(PSTR("rotateInSteps / queueDeltaMove returns error"));
     }
     Printer::feedrate = savedFeedrate;
+#if SCARA_TYPE == PARALEL
+	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
+#endif
     transformScaraStepsToCartesianSteps(Printer::currentNonlinearPositionSteps, Printer::currentPositionSteps);
     Printer::updateCurrentPosition();
     if(waitEnd)
@@ -1282,7 +1288,7 @@ uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y)
 	double tempA = a / 57.29577951472;															// Kusuma SCARA
 	double tempB = b / 57.29577951472;															// Kusuma SCARA
 #if SCARA_TYPE == PARALEL
-	b = b - a;
+	tempB -= tempA;
 #endif
 	x = (Printer::ArmLength * cos(tempA) + Printer::ForearmLength * cos( tempA + tempB ));	// Kusuma SCARA
 	y = (Printer::ArmLength * sin(tempA) + Printer::ForearmLength * sin( tempA + tempB ));	// Kusuma SCARA
