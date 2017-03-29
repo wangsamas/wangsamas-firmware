@@ -406,8 +406,9 @@ bool Printer::isPositionAllowed(float x,float y,float z)
 	    allowed = allowed && (z >= 0) && (z <= zLength + 0.05 + ENDSTOP_Z_BACK_ON_HOME);				// Kusuma SCARA
 		float tempX, tempY, tempA, tempB;																// Kusuma SCARA
 		TransformToScaraCenter(x,y,tempX,tempY);														// Kusuma SCARA
-		allowed = allowed && ((tempX*tempX + tempY*tempY) <= Printer::squaredscaraMaxRadius - 0.1);		// Kusuma SCARA
-		allowed = allowed && ((tempX*tempX + tempY*tempY) >= Printer::squaredscaraMinRadius + 0.1);		// Kusuma SCARA
+		tempA = tempX*tempX + tempY*tempY;
+		allowed = allowed && (tempA <= Printer::squaredscaraMaxRadius - 0.1);		// Kusuma SCARA
+		allowed = allowed && (tempA >= Printer::squaredscaraMinRadius + 0.1);		// Kusuma SCARA
 		ScaraInverseKinematics(tempX, tempY, tempA, tempB);												// Kusuma SCARA
 		allowed = allowed && tempA >= Printer::ShoulderMinAngle - 0.01;									// Kusuma SCARA
 		allowed = allowed && tempA <= Printer::ShoulderMaxAngle + 0.01;	// Kusuma SCARA
