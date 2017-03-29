@@ -76,13 +76,11 @@ are rewrite based off of Hydra-mmm firmware.
 #define ELBOW_BED_CENTER_ANGLE 90		  // Posisi sudut siku Scara di pusat papan dalam derajat. Position of Scara elbow angle at bed center in degree
 
 // Delta settings
-#define DELTA_DIAGONAL_ROD 445 		     	// Panjang diagonal batang dalam mm, diagonal rod length in mm
 #define DELTA_ALPHA_A 210			        	// Sudut antara sumbu X positif dengan Tower A dalam derajat, Angle between positive X Axis and Tower A in degree 
 #define DELTA_ALPHA_B 330		        		// Sudut antara sumbu X positif dengan Tower B dalam derajat, Angle between positive X Axis and Tower B in degree 
 #define DELTA_ALPHA_C 90			        	// Sudut antara sumbu X positif dengan Tower C dalam derajat, Angle between positive X Axis and Tower C in degree 
-#define DELTA_RADIUS_CORRECTION_A 0	  	// Koreksi jarak tower A ke pusat papan dalam mm, Tower A distance to bed center correction in mm
-#define DELTA_RADIUS_CORRECTION_B 0	  	// Koreksi jarak tower B ke pusat papan dalam mm, Tower B distance to bed center correction in mm
-#define DELTA_RADIUS_CORRECTION_C 0		  // Koreksi jarak tower C ke pusat papan dalam mm, Tower C distance to bed center correction in mm
+
+#define DELTA_DIAGONAL_ROD 445 		     	// Panjang diagonal batang dalam mm, diagonal rod length in mm
 #define DELTA_DIAGONAL_CORRECTION_A 0 	// Koreksi panjang batang A in mm, rod A length correction in mm
 #define DELTA_DIAGONAL_CORRECTION_B 0	  // Koreksi panjang batang B in mm, rod B length correction in mm
 #define DELTA_DIAGONAL_CORRECTION_C 0 	// Koreksi panjang batang C in mm, rod C length correction in mm
@@ -92,6 +90,10 @@ are rewrite based off of Hydra-mmm firmware.
 // If you enter ROD_RADIUS value, the formula above is ignored. If you don't enter ROD_RADIUS value, the formula above calculated
 
 #define ROD_RADIUS 209.25				          // Radius mendatar batang di posisi pusat papan, Horizontal rod radius at bed center position
+#define DELTA_RADIUS_CORRECTION_A 0	  	// Koreksi jarak tower A ke pusat papan dalam mm, Tower A distance to bed center correction in mm
+#define DELTA_RADIUS_CORRECTION_B 0	  	// Koreksi jarak tower B ke pusat papan dalam mm, Tower B distance to bed center correction in mm
+#define DELTA_RADIUS_CORRECTION_C 0		  // Koreksi jarak tower C ke pusat papan dalam mm, Tower C distance to bed center correction in mm
+
 #define END_EFFECTOR_HORIZONTAL_OFFSET 0  // Jarak mendatar antara effector ke batang, horizontal distance between effector and rod
 #define CARRIAGE_HORIZONTAL_OFFSET 0	    // Jarak mendatar antara carriage ke batang, horizontal distance between carriage and rod
 #define PRINTER_RADIUS 209.25			        // Jarak antara nozzle dan tower, distance between nozzle and tower
