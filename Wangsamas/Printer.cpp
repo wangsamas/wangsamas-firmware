@@ -487,8 +487,12 @@ void Printer::updateDerivedParameter()
 	ElbowBedCenterAngle = EEPROM::ElbowBedCenterAngle();			// Kusuma SCARA
 	ScaraForwardKinematics(ShoulderBedCenterAngle, ElbowBedCenterAngle, BedCenterXpos, BedCenterYpos);
 	ScaraForwardKinematics(ShoulderMinAngle, ElbowMaxAngle, ScaraEndstopPosX, ScaraEndstopPosY);				
+#if SCARA_TYPE == PARALEL
+	squaredscaraMinRadius = (ArmLength - ForearmLength)*(ArmLength - ForearmLength);
+#else
+	ScaraForwardKinematics(ShoulderMinAngle, ElbowMaxAngle, ScaraEndstopPosX, ScaraEndstopPosY);				
 	squaredscaraMinRadius = ScaraEndstopPosX * ScaraEndstopPosX + ScaraEndstopPosY * ScaraEndstopPosY;
-	squaredscaraMaxRadius = (ArmLength + ForearmLength)*(ArmLength + ForearmLength);						//Kusuma SCARA
+#endif
     xMaxSteps = ShoulderMaxAngle * axisStepsPerUnit[X_AXIS];
 	yMaxSteps = ElbowMaxAngle * axisStepsPerUnit[Y_AXIS];
 	zMaxSteps = zLength * axisStepsPerUnit[Z_AXIS];
