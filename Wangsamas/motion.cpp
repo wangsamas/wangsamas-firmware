@@ -125,9 +125,9 @@ void PrintLine::rotateInSteps(int32_t x, int32_t y, float feedrate, bool waitEnd
         Com::printWarningFLN(PSTR("rotateInSteps / queueDeltaMove returns error"));
     }
     Printer::feedrate = savedFeedrate;
-//#if SCARA_TYPE == PARALEL
-//	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
-//#endif
+#if SCARA_TYPE == PARALEL
+	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
+#endif
     transformScaraStepsToCartesianSteps(Printer::currentNonlinearPositionSteps, Printer::currentPositionSteps);
 	Printer::updateCurrentPosition();
     if(waitEnd)
@@ -148,9 +148,9 @@ void PrintLine::rotateInStepsNoCheck(int32_t x, int32_t y, float feedrate, bool 
         Com::printWarningFLN(PSTR("rotateInSteps / queueDeltaMove returns error"));
     }
     Printer::feedrate = savedFeedrate;
-//#if SCARA_TYPE == PARALEL
-//	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
-//#endif
+#if SCARA_TYPE == PARALEL
+	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
+#endif
     transformScaraStepsToCartesianSteps(Printer::currentNonlinearPositionSteps, Printer::currentPositionSteps);
     Printer::updateCurrentPosition();
     if(waitEnd)
