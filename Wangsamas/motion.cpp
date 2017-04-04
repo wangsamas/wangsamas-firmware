@@ -125,9 +125,9 @@ void PrintLine::rotateInSteps(int32_t x, int32_t y, float feedrate, bool waitEnd
         Com::printWarningFLN(PSTR("rotateInSteps / queueDeltaMove returns error"));
     }
     Printer::feedrate = savedFeedrate;
-#if SCARA_TYPE == PARALEL
-	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
-#endif
+//#if SCARA_TYPE == PARALEL
+//	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
+//#endif
     transformScaraStepsToCartesianSteps(Printer::currentNonlinearPositionSteps, Printer::currentPositionSteps);
 	Printer::updateCurrentPosition();
     if(waitEnd)
@@ -148,9 +148,9 @@ void PrintLine::rotateInStepsNoCheck(int32_t x, int32_t y, float feedrate, bool 
         Com::printWarningFLN(PSTR("rotateInSteps / queueDeltaMove returns error"));
     }
     Printer::feedrate = savedFeedrate;
-#if SCARA_TYPE == PARALEL
-	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
-#endif
+//#if SCARA_TYPE == PARALEL
+//	Printer::currentNonlinearPositionSteps[Y_AXIS] -= x * YAXIS_STEPS_PER_UNIT / XAXIS_STEPS_PER_UNIT;
+//#endif
     transformScaraStepsToCartesianSteps(Printer::currentNonlinearPositionSteps, Printer::currentPositionSteps);
     Printer::updateCurrentPosition();
     if(waitEnd)
@@ -1948,6 +1948,30 @@ inline uint16_t PrintLine::calculateNonlinearSubSegments(uint8_t softEndstop)
         if (transformCartesianStepsToDeltaSteps(destinationSteps, destinationDeltaSteps))
         {
             d->dir = 0;
+#if DRIVE_SYSTEM == SCARA			
+			if (softEndstop)
+			{
+#if min_software_endstop_x
+				if (destinationDeltaSteps[X_AXIS] < Printer::xMinSteps) destinationDeltaSteps[X_AXIS] = Printer::xMinSteps;
+#endif
+#if min_software_endstop_y
+				if (destinationDeltaSteps[Y_AXIS] < Printer::yMinSteps) destinationDeltaSteps[Y_AXIS] = Printer::yMinSteps;
+#endif
+#if min_software_endstop_z
+				if (Printer::isAutolevelActive() == false && destinationDeltaSteps[Z_AXIS] < Printer::zMinSteps && !Printer::isZProbingActive()) destinationDeltaSteps[Z_AXIS] = Printer::zMinSteps;
+#endif
+
+#if max_software_endstop_x
+				if (destinationDeltaSteps[X_AXIS] > Printer::xMaxSteps) destinationDeltaSteps[X_AXIS] = Printer::xMaxSteps;
+#endif
+#if max_software_endstop_y
+				if (destinationDeltaSteps[Y_AXIS] > Printer::yMaxSteps) destinationDeltaSteps[Y_AXIS] = Printer::yMaxSteps;
+#endif
+#if max_software_endstop_z
+				if (Printer::isAutolevelActive() == false && destinationDeltaSteps[Z_AXIS] > Printer::zMaxSteps && !Printer::isZProbingActive()) destinationDeltaSteps[Z_AXIS] = Printer::zMaxSteps;
+#endif
+			}
+#endif
 #if DRIVE_SYSTEM == DELTA			
             if (softEndstop)
             {

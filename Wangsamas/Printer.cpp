@@ -409,11 +409,11 @@ bool Printer::isPositionAllowed(float x,float y,float z)
 		tempA = tempX*tempX + tempY*tempY;
 		allowed = allowed && (tempA <= Printer::squaredscaraMaxRadius - 0.1);		// Kusuma SCARA
 		allowed = allowed && (tempA >= Printer::squaredscaraMinRadius + 0.1);		// Kusuma SCARA
-		ScaraInverseKinematics(tempX, tempY, tempA, tempB);												// Kusuma SCARA
-		allowed = allowed && tempA >= Printer::ShoulderMinAngle - 0.01;									// Kusuma SCARA
-		allowed = allowed && tempA <= Printer::ShoulderMaxAngle + 0.01;	// Kusuma SCARA
-		allowed = allowed && tempB >= Printer::ElbowMinAngle - 0.01;									// Kusuma SCARA
-		allowed = allowed && tempB <= Printer::ElbowMaxAngle + 0.01;		// Kusuma SCARA
+//		ScaraInverseKinematics(tempX, tempY, tempA, tempB);												// Kusuma SCARA
+//		allowed = allowed && tempA >= Printer::ShoulderMinAngle - 0.01;									// Kusuma SCARA
+//		allowed = allowed && tempA <= Printer::ShoulderMaxAngle + 0.01;	// Kusuma SCARA
+//		allowed = allowed && tempB >= Printer::ElbowMinAngle - 0.01;									// Kusuma SCARA
+//		allowed = allowed && tempB <= Printer::ElbowMaxAngle + 0.01;		// Kusuma SCARA
 	}																									// Kusuma SCARA
 #endif // DRIVE_SYSTEM
     if(!allowed)
@@ -486,13 +486,13 @@ void Printer::updateDerivedParameter()
 	ShoulderBedCenterAngle = EEPROM::ShoulderBedCenterAngle();		// Kusuma SCARA
 	ElbowBedCenterAngle = EEPROM::ElbowBedCenterAngle();			// Kusuma SCARA
 	ScaraForwardKinematics(ShoulderBedCenterAngle, ElbowBedCenterAngle, BedCenterXpos, BedCenterYpos);
-	ScaraForwardKinematics(ShoulderMinAngle, ElbowMaxAngle, ScaraEndstopPosX, ScaraEndstopPosY);				
 #if SCARA_TYPE == PARALEL
 	squaredscaraMinRadius = (ArmLength - ForearmLength)*(ArmLength - ForearmLength);
 #else
 	ScaraForwardKinematics(ShoulderMinAngle, ElbowMaxAngle, ScaraEndstopPosX, ScaraEndstopPosY);				
 	squaredscaraMinRadius = ScaraEndstopPosX * ScaraEndstopPosX + ScaraEndstopPosY * ScaraEndstopPosY;
 #endif
+	squaredscaraMaxRadius = (ArmLength + ForearmLength)*(ArmLength + ForearmLength);						//Kusuma SCARA
     xMaxSteps = ShoulderMaxAngle * axisStepsPerUnit[X_AXIS];
 	yMaxSteps = ElbowMaxAngle * axisStepsPerUnit[Y_AXIS];
 	zMaxSteps = zLength * axisStepsPerUnit[Z_AXIS];
