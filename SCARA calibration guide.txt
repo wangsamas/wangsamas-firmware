@@ -1,0 +1,62 @@
+/* SCARA CALIBRATION 
+
+SINGLE SCARA
+1. Calibrate forearm length & steps per unit using 3 points marked on a paper (Make sure your paper stick to bed & mark exactly from you nozzle)
+	a. Home using G28 command
+	b. Rotate forearm to the maximum angle as possible on bed use G5 Y___ command. Mark on paper point A and enter G50 P1 command
+	c. Rotate forearm to approximately on bed center use G5 Y___ command. Mark on paper point B and enter G50 P2 command
+	d. Rotate forearm to the minimum angle as possible on bed use G5 Y___ command. Mark on paper point C and enter G50 P3 command
+	e. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	f. Enter G50 X___ Y___ Z___ S1 command.
+	g. Read the calculated forearm length and steps per unit. if it doesn't make sense, repeat the steps. if it make sense enter G50 S11 command to save.
+	h. Repeat step 1b & 1c, measure distance point A to B. Enter G50 P5 command, check if the value and measured distance are the same.
+	i. If you cannot tolerate with the difference, repeat the calibration or you can manually edit from EEPROM. (suggestion 0.0x tolerance)
+2. Calibrate arm steps per unit using 6 points marked on a paper
+	a. Home using G28 command
+	b. Rotate arm to the maximum angle as possible on bed use G5 X___ command. Mark on paper point A and enter G50 P1 command
+	c. Rotate arm to approximately on bed center use G5 X___ command. Mark on paper point B and enter G50 P2 command
+	d. Rotate arm to the minimum angle as possible on bed use G5 X___ command. Mark on paper point C and enter G50 P3 command
+	e. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	f. Enter G50 X___ Y___ Z___ S21 command.
+	g. Rotate forearm away from arm use G5 Y___ command to get another 3 points different from the first 3. 
+	h. Rotate arm to the maximum angle as possible on bed use G5 X___ command. Mark on paper point A and enter G50 P1 command
+	i. Rotate arm to approximately on bed center use G5 X___ command. Mark on paper point B and enter G50 P2 command
+	j. Rotate arm to the minimum angle as possible on bed use G5 X___ command. Mark on paper point C and enter G50 P3 command
+	k. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	l. Enter G50 X___ Y___ Z___ S22 command.
+	m. Compare steps per unit result from step 2f and 2l. It suppose to be the same. Repeat the steps if you are not satisfy.
+3. Calibrate arm length and elbow angle.
+	a. Enter G50 S23, you will get 2 options for your arm length and elbow angle. choose the one you think right.
+	b. Enter G50 S231 if you choose the 1st option, enter G232 if you choose the 2nd option to save you calibration.
+	c. If you did it all right, your calibration is done.
+
+PARALEL SCARA
+1. Calibrate forearm length & steps per unit using 3 points marked on a paper (Make sure your paper stick to bed & mark exactly from you nozzle)
+	a. Home using G28 command
+	b. Rotate forearm to the maximum angle as possible on bed use G5 Y___ command. Mark on paper point A and enter G50 P1 command
+	c. Rotate forearm to approximately on bed center use G5 Y___ command. Mark on paper point B and enter G50 P2 command
+	d. Rotate forearm to the minimum angle as possible on bed use G5 Y___ command. Mark on paper point C and enter G50 P3 command
+	e. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	f. Enter G50 X___ Y___ Z___ S1 command.
+	g. Read the calculated forearm length and steps per unit. if it doesn't make sense, repeat the steps. if it make sense enter G50 S11 command to save.
+	h. Repeat step 1b & 1c, measure distance point A to B. Enter G50 P5 command, check if the value and measured distance are the same.
+	i. If you cannot tolerate with the difference, repeat the calibration or you can manually edit from EEPROM. (suggestion 0.0x tolerance)
+2. Calibrate forearm length & steps per unit using 3 points marked on a paper
+	a. Home using G28 command
+	b. Rotate arm to the maximum angle as possible on bed use G5 X___ command. Mark on paper point A and enter G50 P1 command
+	c. Rotate arm to approximately on bed center use G5 X___ command. Mark on paper point B and enter G50 P2 command
+	d. Rotate arm to the minimum angle as possible on bed use G5 X___ command. Mark on paper point C and enter G50 P3 command
+	e. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	f. Enter G50 X___ Y___ Z___ S2 command.
+	g. Read the calculated forearm length and steps per unit. if it doesn't make sense, repeat the steps. if it make sense enter G50 S21 command to save.
+	h. Repeat step 2b & 2c, measure distance point A to B. Enter G50 P5 command, check if the value and measured distance are the same.
+	i. If you cannot tolerate with the difference, repeat the calibration or you can manually edit from EEPROM. (suggestion 0.0x tolerance)
+3. Calibrate angles
+	a. Home using G28 command
+	b. Move to approximatelly at bed center use G1 X___ Y___ command. Mark on paper point A and enter G50 P1 command
+	c. Move to somewhere else on bed use G1 X___ Y___ command. Mark on paper point B and enter G50 P2 command
+	d. Measure distance point A to B (X)
+	e. Enter G50 X___ S3 command.
+	f. Repeat step 3b & 3c, measure distance point A to B. Enter G50 P5 command, check if the value and measured distance are the same.
+	g. If they are the same, your calibration is done. 
+*/
