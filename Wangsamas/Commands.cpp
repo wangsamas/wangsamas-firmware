@@ -1216,6 +1216,68 @@ void Commands::processGCode(GCode *com) {
 			com->X = com->Y = 0;
 		}
 		break;
+/* SCARA CALIBRATION 
+
+SINGLE SCARA
+1. Calibrate forearm length & steps per unit using 3 points marked on a paper (Make sure your paper stick to bed & mark exactly from you nozzle)
+	a. Home using G28 command
+	b. Rotate forearm to the maximum angle as possible on bed use G5 Y___ command. Mark on paper point A and enter G50 P1 command
+	c. Rotate forearm to approximately on bed center use G5 Y___ command. Mark on paper point B and enter G50 P2 command
+	d. Rotate forearm to the minimum angle as possible on bed use G5 Y___ command. Mark on paper point C and enter G50 P3 command
+	e. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	f. Enter G50 X___ Y___ Z___ S1 command.
+	g. Read the calculated forearm length and steps per unit. if it doesn't make sense, repeat the steps. if it make sense enter G50 S11 command to save.
+	h. Repeat step 1b & 1c, measure distance point A to B. Enter G50 P5 command, check if the value and measured distance are the same.
+	i. If you cannot tolerate with the difference, repeat the calibration or you can manually edit from EEPROM. (suggestion 0.0x tolerance)
+2. Calibrate arm steps per unit using 6 points marked on a paper
+	a. Home using G28 command
+	b. Rotate arm to the maximum angle as possible on bed use G5 X___ command. Mark on paper point A and enter G50 P1 command
+	c. Rotate arm to approximately on bed center use G5 X___ command. Mark on paper point B and enter G50 P2 command
+	d. Rotate arm to the minimum angle as possible on bed use G5 X___ command. Mark on paper point C and enter G50 P3 command
+	e. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	f. Enter G50 X___ Y___ Z___ S21 command.
+	g. Rotate forearm away from arm use G5 Y___ command to get another 3 points different from the first 3. 
+	h. Rotate arm to the maximum angle as possible on bed use G5 X___ command. Mark on paper point A and enter G50 P1 command
+	i. Rotate arm to approximately on bed center use G5 X___ command. Mark on paper point B and enter G50 P2 command
+	j. Rotate arm to the minimum angle as possible on bed use G5 X___ command. Mark on paper point C and enter G50 P3 command
+	k. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	l. Enter G50 X___ Y___ Z___ S22 command.
+	m. Compare steps per unit result from step 2f and 2l. It suppose to be the same. Repeat the steps if you are not satisfy.
+3. Calibrate arm length and elbow angle.
+	a. Enter G50 S23, you will get 2 options for your arm length and elbow angle. choose the one you think right.
+	b. Enter G50 S231 if you choose the 1st option, enter G232 if you choose the 2nd option to save you calibration.
+	c. If you did it all right, your calibration is done.
+
+PARALEL SCARA
+1. Calibrate forearm length & steps per unit using 3 points marked on a paper (Make sure your paper stick to bed & mark exactly from you nozzle)
+	a. Home using G28 command
+	b. Rotate forearm to the maximum angle as possible on bed use G5 Y___ command. Mark on paper point A and enter G50 P1 command
+	c. Rotate forearm to approximately on bed center use G5 Y___ command. Mark on paper point B and enter G50 P2 command
+	d. Rotate forearm to the minimum angle as possible on bed use G5 Y___ command. Mark on paper point C and enter G50 P3 command
+	e. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	f. Enter G50 X___ Y___ Z___ S1 command.
+	g. Read the calculated forearm length and steps per unit. if it doesn't make sense, repeat the steps. if it make sense enter G50 S11 command to save.
+	h. Repeat step 1b & 1c, measure distance point A to B. Enter G50 P5 command, check if the value and measured distance are the same.
+	i. If you cannot tolerate with the difference, repeat the calibration or you can manually edit from EEPROM. (suggestion 0.0x tolerance)
+2. Calibrate forearm length & steps per unit using 3 points marked on a paper
+	a. Home using G28 command
+	b. Rotate arm to the maximum angle as possible on bed use G5 X___ command. Mark on paper point A and enter G50 P1 command
+	c. Rotate arm to approximately on bed center use G5 X___ command. Mark on paper point B and enter G50 P2 command
+	d. Rotate arm to the minimum angle as possible on bed use G5 X___ command. Mark on paper point C and enter G50 P3 command
+	e. Measure distance point A to B (X), point B to C (Y), point A to C (Z)
+	f. Enter G50 X___ Y___ Z___ S2 command.
+	g. Read the calculated forearm length and steps per unit. if it doesn't make sense, repeat the steps. if it make sense enter G50 S21 command to save.
+	h. Repeat step 2b & 2c, measure distance point A to B. Enter G50 P5 command, check if the value and measured distance are the same.
+	i. If you cannot tolerate with the difference, repeat the calibration or you can manually edit from EEPROM. (suggestion 0.0x tolerance)
+3. Calibrate angles
+	a. Home using G28 command
+	b. Move to approximatelly at bed center use G1 X___ Y___ command. Mark on paper point A and enter G50 P1 command
+	c. Move to somewhere else on bed use G1 X___ Y___ command. Mark on paper point B and enter G50 P2 command
+	d. Measure distance point A to B (X)
+	e. Enter G50 X___ S3 command.
+	f. Repeat step 3b & 3c, measure distance point A to B. Enter G50 P5 command, check if the value and measured distance are the same.
+	g. If they are the same, your calibration is done. 
+*/
 		case 50:
 		{
 			if(com->hasP())
@@ -1257,10 +1319,15 @@ void Commands::processGCode(GCode *com) {
 			}
 			else if(com->hasS())
 			{
-				float a = com->Z / 2;
-				float b = (com->X * com->X + com->Y * com->Y + com->Y * com->Z) / (2 * com->X );
-				float R = sqrt(a * a + b * b);
-				float d = 2 * acos(b / R) * 57.29577951472;
+				float a = (com->Z * com->Z - com->X * com->X - com->Y * com->Y) / (2 * com->X );
+				float b = sqrt(com->Y * com->Y - a * a);
+				float c = com->X / 2;
+				float d = (com->Y * com->Y + com->X * a) / (2 * b);
+				float R = sqrt(c * c + d * d);
+//				float a = com->Z / 2;
+//				float b = (com->X * com->X + com->Y * com->Y + com->Y * com->Z) / (2 * com->X );
+//				float R = sqrt(a * a + b * b);
+				d = 2 * acos(c / R) * 57.29577951472;
 				if(com->S == 1){
 					a = sqrt(RMath::sqr((Printer::deltaBPosYSteps-Printer::deltaAPosYSteps) / d));
 					Printer::ForearmLength = R;
@@ -1279,7 +1346,8 @@ void Commands::processGCode(GCode *com) {
 					Com::printFLN(PSTR(" Elbow Steps per Unit	: "), Printer::axisStepsPerUnit[Y_AXIS]);
 					Com::printFLN(PSTR(" Saved to EEPROM"));									
 				}
-			else if(com->S == 21){
+#if SCARA_TYPE == SINGLE
+				else if(com->S == 21){
 					Printer::deltaAPosX = R; 
 					Printer::radius0 = sqrt(RMath::sqr((Printer::deltaAPosXSteps-Printer::deltaBPosXSteps) / d));
 					Com::printFLN(PSTR(" Step 1 calibrating Arm"));									
@@ -1349,6 +1417,35 @@ void Commands::processGCode(GCode *com) {
 					Com::printFLN(PSTR(" Shoulder Steps per Unit	: "), Printer::axisStepsPerUnit[X_AXIS]);
 					Com::printFLN(PSTR(" Saved to EEPROM"));									
 				}
+#else
+				else if(com->S == 2){
+					a = sqrt(RMath::sqr((Printer::deltaBPosYSteps-Printer::deltaAPosYSteps) / d));
+					Printer::ArmLength = R;
+					Printer::sqArm = Printer::ArmLength*Printer::ArmLength;
+					Printer::axisStepsPerUnit[X_AXIS] = a;
+					Printer::invaxisStepsPerUnit[X_AXIS] = 1.0f / Printer::axisStepsPerUnit[X_AXIS];
+					Com::printFLN(PSTR(" Arm Length	: "), Printer::ArmLength);			
+					Com::printFLN(PSTR(" Shoulder Step per Unit	: "), Printer::axisStepsPerUnit[X_AXIS]);
+					Com::printFLN(PSTR(" G50 S21 if you want to save result"));					
+				}
+				else if(com->S == 21){
+					EEPROM::storeScaraDataIntoEEPROM();
+					Printer::updateDerivedParameter();
+					Com::printFLN(PSTR(" Calibrating Arm finished"));									
+					Com::printFLN(PSTR(" Arm Length			: "), EEPROM::armLength());	
+					Com::printFLN(PSTR(" Shoulder Steps per Unit	: "), Printer::axisStepsPerUnit[X_AXIS]);
+					Com::printFLN(PSTR(" Saved to EEPROM"));									
+				}
+				else if(com->S == 3){	
+					a = (Printer::deltaBPosXSteps - Printer::deltaAPosXSteps)* Printer::invaxisStepsPerUnit[X_AXIS]/ 57.29577951472;
+					b = (Printer::deltaBPosYSteps - Printer::deltaAPosYSteps)* Printer::invaxisStepsPerUnit[Y_AXIS]/ 57.29577951472;
+					c = 2 * Printer::ArmLength * sin(a/2);
+					d = 2 * Printer::ForearmLength * sin(b/2);
+					float e = (com->X * com->X - c * c - d * d)/(2 * c * d);
+					float f = Printer::deltaAPosXSteps * Printer::invaxisStepsPerUnit[X_AXIS] + (a - b)/2 - acos(e);
+					Printer::ElbowMaxAngle = Printer::ElbowMaxAngle - Printer::deltaAPosYSteps * Printer::invaxisStepsPerUnit[Y_AXIS] + f * 57.29577951472;
+				}
+#endif
 			}
 			else
 				Com::printFLN(PSTR("Incorrect Command"));
