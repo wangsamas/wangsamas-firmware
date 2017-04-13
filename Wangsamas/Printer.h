@@ -352,8 +352,12 @@ public:
 #if DRIVE_SYSTEM == SCARA				// Kusuma Scara
 	static float ArmLength;				// Kusuma Scara
 	static float ForearmLength;			// Kusuma Scara
-	static float sqArm;					// Kusuma Scara
-	static float sqFarm;				// Kusuma Scara
+//	static float sqArm;					// Kusuma Scara
+//	static float sqFarm;				// Kusuma Scara
+	static float sqArmPlusFarm;			// Kusuma Scara
+	static float ArmXForearmLength;		// Kusuma Scara
+	static float SqArmXForearmLength;	// Kusuma Scara
+	static float ForePerArmXFore;		// Kusuma Scara
 	static float ShoulderMinAngle;		// Kusuma Scara
 	static float ElbowMinAngle;			// Kusuma Scara
 	static float ShoulderMaxAngle;		// Kusuma Scara
@@ -374,14 +378,16 @@ public:
     static float deltaCPosX;
     static float deltaCPosY;	
 #endif 									// Kusuma Scara
-#if NONLINEAR_SYSTEM
+#if DRIVE_SYSTEM == DELTA
     static int32_t maxDeltaPositionSteps;
-    static int32_t currentNonlinearPositionSteps[E_TOWER_ARRAY];
     static floatLong deltaDiagonalStepsSquaredA;
     static floatLong deltaDiagonalStepsSquaredB;
     static floatLong deltaDiagonalStepsSquaredC;
     static float deltaMaxRadiusSquared;
     static int32_t deltaFloorSafetyMarginSteps;
+#endif
+#if NONLINEAR_SYSTEM
+	static int32_t currentNonlinearPositionSteps[E_TOWER_ARRAY];
     static int32_t deltaAPosXSteps;
     static int32_t deltaAPosYSteps;
     static int32_t deltaBPosXSteps;

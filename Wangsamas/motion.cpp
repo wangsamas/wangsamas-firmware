@@ -1297,14 +1297,13 @@ uint8_t ScaraForwardKinematics(float a, float b, float &x, float &y)
 
 uint8_t ScaraInverseKinematics(float x, float y, float &a, float &b)
 {
-	double tempA, tempB, tempC, tempD, tempE; 
-	tempA = x * x + y * y - Printer::sqArm - Printer::sqFarm;
-	tempB = 2 * Printer::ArmLength * Printer::ForearmLength;
-	tempC = sqrt(tempB * tempB - tempA * tempA);
-	tempD = Printer::ForearmLength * tempC / tempB;
-	tempE = Printer::ArmLength + Printer::ForearmLength * tempA / tempB;
+	double tempA, tempC, tempD, tempE; 
+	tempA = x * x + y * y - Printer::sqArmPlusFarm;
+	tempC = sqrt(Printer::SqArmXForearmLength - tempA * tempA);
+	tempD = Printer::ForePerArmXFore * tempC;
+	tempE = Printer::ArmLength + Printer::ForePerArmXFore * tempA ;
 	a = (atan2(y,x) - atan2(tempD, tempE))*57.29577951472;
-	b = acos(tempA / tempB) * 57.29577951472;	
+	b = acos(tempA / Printer::ArmXForearmLength) * 57.29577951472;	
 	if(a<0) a+= 360;
 #if SCARA_TYPE == PARALEL
 	b = b + a;
@@ -1314,8 +1313,8 @@ uint8_t ScaraInverseKinematics(float x, float y, float &a, float &b)
 
 uint8_t TransformToScaraCenter(float tempx1, float tempy1, float &tempx2, float &tempy2)	// Kusuma SCARA
 {																		// Kusuma SCARA
-	tempx2 = tempx1 + Printer::BedCenterXpos;									// Kusuma SCARA
-	tempy2 = tempy1 + Printer::BedCenterYpos;									// Kusuma SCARA
+	tempx2 = tempx1 + Printer::BedCenterXpos;							// Kusuma SCARA
+	tempy2 = tempy1 + Printer::BedCenterYpos;							// Kusuma SCARA
 	return 1;															// Kusuma SCARA
 }																		// Kusuma SCARA
 

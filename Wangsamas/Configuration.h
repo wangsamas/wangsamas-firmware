@@ -51,7 +51,7 @@ are rewrite based off of Hydra-mmm firmware.
 #include "pins.h"
 
 #define DRIVE_SYSTEM 7            // Cartesian 0, Delta 3, Scara 7
-#define SCARA_TYPE SINGLE		  // If drive system = scara -> choose SINGLE, PARALEL
+#define SCARA_TYPE PARALEL		  // If drive system = scara -> choose SINGLE, PARALEL
 #define FEATURE_CONTROLLER 2      // 2 untuk smart controller LCD 2004, 11 untuk Reprap Graphic LCD, lihat wangsamas.h untuk LCD display lainnya
 #define DEFAULT_PRINTER_MODE 0	  // 3D Printer 0, Laser 1, CNC 2
 
@@ -118,31 +118,31 @@ are rewrite based off of Hydra-mmm firmware.
 
 #define INVERT_X_DIR 1										// Ganti 0 atau 1 jika gerakan arah sumbu X terbalik
 #define INVERT_Y_DIR 1										// Ganti 0 atau 1 jika gerakan arah sumbu Y terbalik
-#define INVERT_Z_DIR 0										// Ganti 0 atau 1 jika gerakan arah sumbu Z terbalik
+#define INVERT_Z_DIR 1										// Ganti 0 atau 1 jika gerakan arah sumbu Z terbalik
 
 // ################ Endstop configuration #####################
 
-#define X_HOME_DIR -1										// X MIN Hardware endstop -1, X MAX Hardware endstop 1
+#define X_HOME_DIR 1										// X MIN Hardware endstop -1, X MAX Hardware endstop 1
 #define Y_HOME_DIR 1										// Y MIN Hardware endstop -1, Y MAX Hardware endstop 1
-#define Z_HOME_DIR -1										// Z MIN Hardware endstop -1, Z MAX Hardware endstop 1
+#define Z_HOME_DIR 1										// Z MIN Hardware endstop -1, Z MAX Hardware endstop 1
 
-#define DELTA_HOME_ON_POWER 0								// 1 untuk menuju home ketika printer menyala, 0 untuk diam ketika printer menyala
+#define DELTA_HOME_ON_POWER 1								// 1 untuk menuju home ketika printer menyala, 0 untuk diam ketika printer menyala
 #define HOMING_ORDER HOME_ORDER_ZYX							// Urutan sumbu menuju endstop X, Y, Z sesuai keinginan
 //#define SOFTWARE_LEVELING
 
-#define MIN_HARDWARE_ENDSTOP_X true								// True Jika Endstop berada pada posisi X minimum, false jika tidak
+#define MIN_HARDWARE_ENDSTOP_X false								// True Jika Endstop berada pada posisi X minimum, false jika tidak
 #define MIN_HARDWARE_ENDSTOP_Y false							// True Jika Endstop berada pada posisi Y minimum, false jika tidak
-#define MIN_HARDWARE_ENDSTOP_Z true							// True Jika Endstop berada pada posisi Z minimum, false jika tidak
-#define MAX_HARDWARE_ENDSTOP_X false							// True Jika Endstop berada pada posisi X MAXimum, false jika tidak
+#define MIN_HARDWARE_ENDSTOP_Z false							// True Jika Endstop berada pada posisi Z minimum, false jika tidak
+#define MAX_HARDWARE_ENDSTOP_X true							// True Jika Endstop berada pada posisi X MAXimum, false jika tidak
 #define MAX_HARDWARE_ENDSTOP_Y true								// True Jika Endstop berada pada posisi Y MAXimum, false jika tidak
-#define MAX_HARDWARE_ENDSTOP_Z false								// True Jika Endstop berada pada posisi Z MAXimum, false jika tidak
+#define MAX_HARDWARE_ENDSTOP_Z true								// True Jika Endstop berada pada posisi Z MAXimum, false jika tidak
 
-#define min_software_endstop_x false							// True jika ingin X minimum dibatasi software, false jika tidak
+#define min_software_endstop_x true							// True jika ingin X minimum dibatasi software, false jika tidak
 #define min_software_endstop_y true								// True jika ingin Y minimum dibatasi software, false jika tidak
-#define min_software_endstop_z false								// True jika ingin Z minimum dibatasi software, false jika tidak
-#define max_software_endstop_x true								// True jika ingin X MAXimum dibatasi software, false jika tidak
+#define min_software_endstop_z true								// True jika ingin Z minimum dibatasi software, false jika tidak
+#define max_software_endstop_x false								// True jika ingin X MAXimum dibatasi software, false jika tidak
 #define max_software_endstop_y false							// True jika ingin Y MAXimum dibatasi software, false jika tidak
-#define max_software_endstop_z true							// True jika ingin Z MAXimum dibatasi software, false jika tidak
+#define max_software_endstop_z false							// True jika ingin Z MAXimum dibatasi software, false jika tidak
 #define max_software_endstop_r true
 
 #define ENDSTOP_X_MIN_INVERTING false
@@ -159,15 +159,15 @@ are rewrite based off of Hydra-mmm firmware.
 #define ENDSTOP_PULLUP_Y_MAX true
 #define ENDSTOP_PULLUP_Z_MAX true
 
-#define ENDSTOP_X_BACK_MOVE 0
-#define ENDSTOP_Y_BACK_MOVE 0
+#define ENDSTOP_X_BACK_MOVE 5
+#define ENDSTOP_Y_BACK_MOVE 5
 #define ENDSTOP_Z_BACK_MOVE 5
 #define ENDSTOP_X_RETEST_REDUCTION_FACTOR 3
 #define ENDSTOP_Y_RETEST_REDUCTION_FACTOR 3
 #define ENDSTOP_Z_RETEST_REDUCTION_FACTOR 3
-#define ENDSTOP_X_BACK_ON_HOME 0
-#define ENDSTOP_Y_BACK_ON_HOME 0
-#define ENDSTOP_Z_BACK_ON_HOME 5
+#define ENDSTOP_X_BACK_ON_HOME 1
+#define ENDSTOP_Y_BACK_ON_HOME 1
+#define ENDSTOP_Z_BACK_ON_HOME 1
 #define ALWAYS_CHECK_ENDSTOPS 1
 
 #define STEP_COUNTER
@@ -190,10 +190,10 @@ are rewrite based off of Hydra-mmm firmware.
 
 // #################### Z-Probing #####################
 
-#define DISTORTION_CORRECTION 0     // Menyesuaikan ketidakrataan papan 
-#define FEATURE_AUTOLEVEL 0         // Menyesuaikan kemiringan papan
-#define FEATURE_Z_PROBE 0           // Z probe harus aktif untuk distortion correction & autolevel  
-#define Z_PROBE_PIN ORIG_Z_MAX_PIN  
+#define DISTORTION_CORRECTION 1     // Menyesuaikan ketidakrataan papan 
+#define FEATURE_AUTOLEVEL 1         // Menyesuaikan kemiringan papan
+#define FEATURE_Z_PROBE 1           // Z probe harus aktif untuk distortion correction & autolevel  
+#define Z_PROBE_PIN ORIG_Z_MIN_PIN  
 
 #define Z_PROBE_Z_OFFSET 0
 #define Z_PROBE_Z_OFFSET_MODE 0

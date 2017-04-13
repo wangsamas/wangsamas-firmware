@@ -1331,7 +1331,11 @@ PARALEL SCARA
 				if(com->S == 1){
 					a = sqrt(RMath::sqr((Printer::deltaBPosYSteps-Printer::deltaAPosYSteps) / d));
 					Printer::ForearmLength = R;
-					Printer::sqFarm = Printer::ForearmLength*Printer::ForearmLength;
+//					Printer::sqFarm = Printer::ForearmLength*Printer::ForearmLength;
+					Printer::sqArmPlusFarm = Printer::ArmLength * Printer::ArmLength + Printer::ForearmLength * Printer::ForearmLength;								// Kusuma Scara
+					Printer::ArmXForearmLength = 2 * Printer::ArmLength * Printer::ForearmLength;			// Kusuma Scara
+					Printer::SqArmXForearmLength = Printer::ArmXForearmLength * Printer::ArmXForearmLength; // Kusuma Scara
+					Printer::ForePerArmXFore = Printer::ForearmLength / Printer::ArmXForearmLength;
 					Printer::axisStepsPerUnit[Y_AXIS] = a;
 					Printer::invaxisStepsPerUnit[Y_AXIS] = 1.0f / Printer::axisStepsPerUnit[Y_AXIS];
 					Com::printFLN(PSTR(" ForeArm Length	: "), Printer::ForearmLength);			
@@ -1393,7 +1397,11 @@ PARALEL SCARA
 				}
 				else if(com->S == 231){
 					Printer::ArmLength = Printer::deltaBPosX;
-					Printer::sqArm = Printer::ArmLength*Printer::ArmLength;
+//					Printer::sqArm = Printer::ArmLength*Printer::ArmLength;
+					Printer::sqArmPlusFarm = Printer::ArmLength * Printer::ArmLength + Printer::ForearmLength * Printer::ForearmLength;								// Kusuma Scara
+					Printer::ArmXForearmLength = 2 * Printer::ArmLength * Printer::ForearmLength;			// Kusuma Scara
+					Printer::SqArmXForearmLength = Printer::ArmXForearmLength * Printer::ArmXForearmLength; // Kusuma Scara
+					Printer::ForePerArmXFore = Printer::ForearmLength / Printer::ArmXForearmLength;
 					Printer::ElbowMaxAngle = Printer::deltaBPosY;
 					Printer::yMaxSteps = Printer::ElbowMaxAngle * Printer::axisStepsPerUnit[Y_AXIS];
 					EEPROM::storeScaraDataIntoEEPROM();
@@ -1406,7 +1414,11 @@ PARALEL SCARA
 				}
 				else if(com->S == 232){
 					Printer::ArmLength = Printer::deltaCPosX;
-					Printer::sqArm = Printer::ArmLength*Printer::ArmLength;
+//					Printer::sqArm = Printer::ArmLength*Printer::ArmLength;
+					Printer::sqArmPlusFarm = Printer::ArmLength * Printer::ArmLength + Printer::ForearmLength * Printer::ForearmLength;								// Kusuma Scara
+					Printer::ArmXForearmLength = 2 * Printer::ArmLength * Printer::ForearmLength;			// Kusuma Scara
+					Printer::SqArmXForearmLength = Printer::ArmXForearmLength * Printer::ArmXForearmLength; // Kusuma Scara
+					Printer::ForePerArmXFore = Printer::ForearmLength / Printer::ArmXForearmLength;
 					Printer::ElbowMaxAngle = Printer::deltaCPosY;
 					Printer::yMaxSteps = Printer::ElbowMaxAngle * Printer::axisStepsPerUnit[Y_AXIS];
 					EEPROM::storeScaraDataIntoEEPROM();
@@ -1421,7 +1433,11 @@ PARALEL SCARA
 				else if(com->S == 2){
 					a = sqrt(RMath::sqr((Printer::deltaBPosYSteps-Printer::deltaAPosYSteps) / d));
 					Printer::ArmLength = R;
-					Printer::sqArm = Printer::ArmLength*Printer::ArmLength;
+//					Printer::sqArm = Printer::ArmLength*Printer::ArmLength;
+					Printer::sqArmPlusFarm = Printer::ArmLength * Printer::ArmLength + Printer::ForearmLength * Printer::ForearmLength;								// Kusuma Scara
+					Printer::ArmXForearmLength = 2 * Printer::ArmLength * Printer::ForearmLength;			// Kusuma Scara
+					Printer::SqArmXForearmLength = Printer::ArmXForearmLength * Printer::ArmXForearmLength; // Kusuma Scara
+					Printer::ForePerArmXFore = Printer::ForearmLength / Printer::ArmXForearmLength;
 					Printer::axisStepsPerUnit[X_AXIS] = a;
 					Printer::invaxisStepsPerUnit[X_AXIS] = 1.0f / Printer::axisStepsPerUnit[X_AXIS];
 					Com::printFLN(PSTR(" Arm Length	: "), Printer::ArmLength);			
@@ -1452,7 +1468,7 @@ PARALEL SCARA
 			com->X = com->Y = com->Z = com->S = 0;
 		}
 		break;
-		case 51:			// Kusuma SCARA, S1 set bed center, X1 set shoulder max angle, Y1 set shoulder max angle
+/*		case 51:			// Kusuma SCARA, S1 set bed center, X1 set shoulder max angle, Y1 set shoulder max angle
 		{
 			if(com->hasS() && com->S == 1)
 			{
@@ -1618,7 +1634,7 @@ PARALEL SCARA
 				}	
 			}	
 		}
-		break;
+		break;*/
         case 58: { //G58 All Go To Endstops
 #if defined(SUPPORT_LASER) && SUPPORT_LASER
 				bool oldLaser = LaserDriver::laserOn;

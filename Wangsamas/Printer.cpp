@@ -106,14 +106,16 @@ int32_t Printer::advanceExecuted;             ///< Executed advance steps
 #endif
 int Printer::advanceStepsSet;
 #endif
-#if NONLINEAR_SYSTEM
+#if DRIVE_SYSTEM == DELTA
 int32_t Printer::maxDeltaPositionSteps;
 floatLong Printer::deltaDiagonalStepsSquaredA;
 floatLong Printer::deltaDiagonalStepsSquaredB;
 floatLong Printer::deltaDiagonalStepsSquaredC;
 float Printer::deltaMaxRadiusSquared;
-float Printer::radius0;
 int32_t Printer::deltaFloorSafetyMarginSteps = 0;
+#endif
+#if NONLINEAR_SYSTEM
+float Printer::radius0;
 int32_t Printer::deltaAPosXSteps;
 int32_t Printer::deltaAPosYSteps;
 int32_t Printer::deltaBPosXSteps;
@@ -129,8 +131,12 @@ int16_t Printer::printMovesPerSecond;
 #if DRIVE_SYSTEM == SCARA											// Kusuma Scara
 float Printer::ArmLength = ARM_LENGTH;				// Kusuma Scara
 float Printer::ForearmLength = FOREARM_LENGTH;			// Kusuma Scara
-float Printer::sqArm;					// Kusuma Scara
-float Printer::sqFarm;					// Kusuma Scara
+//float Printer::sqArm;					// Kusuma Scara
+//float Printer::sqFarm;					// Kusuma Scara
+float Printer::sqArmPlusFarm;			// Kusuma Scara
+float Printer::ArmXForearmLength;		// Kusuma Scara
+float Printer::SqArmXForearmLength;	// Kusuma Scara
+float Printer::ForePerArmXFore;		// Kusuma Scara
 float Printer::ShoulderMinAngle;		// Kusuma Scara
 float Printer::ElbowMinAngle;			// Kusuma Scara
 float Printer::ShoulderMaxAngle;		// Kusuma Scara
@@ -477,12 +483,16 @@ void Printer::updateDerivedParameter()
 #if DRIVE_SYSTEM == SCARA					// Kusuma SCARA
     ArmLength = EEPROM::armLength();								// Kusuma SCARA
     ForearmLength = EEPROM::forearmLength();						// Kusuma SCARA
-    sqArm = ArmLength* ArmLength;									// Kusuma SCARA
-    sqFarm = ForearmLength* ForearmLength;							// Kusuma SCARA
+//    sqArm = ArmLength* ArmLength;									// Kusuma SCARA
+//    sqFarm = ForearmLength* ForearmLength;							// Kusuma SCARA
+	sqArmPlusFarm = ArmLength* ArmLength + ForearmLength* ForearmLength;	// Kusuma Scara
+	ArmXForearmLength = 2 * ArmLength * ForearmLength;				// Kusuma Scara
+	SqArmXForearmLength	= ArmXForearmLength * ArmXForearmLength; 	// Kusuma Scara
+	ForePerArmXFore = ForearmLength / ArmXForearmLength;
     ShoulderMinAngle = EEPROM::ShoulderMinAngle();					// Kusuma SCARA
     ElbowMinAngle = EEPROM::ElbowMinAngle();						// Kusuma SCARA
-	ShoulderMaxAngle = EEPROM::ShoulderMaxAngle();			// Kusuma SCARA
-	ElbowMaxAngle = EEPROM::ElbowMaxAngle();					// Kusuma SCARA	
+	ShoulderMaxAngle = EEPROM::ShoulderMaxAngle();					// Kusuma SCARA
+	ElbowMaxAngle = EEPROM::ElbowMaxAngle();						// Kusuma SCARA	
 	ShoulderBedCenterAngle = EEPROM::ShoulderBedCenterAngle();		// Kusuma SCARA
 	ElbowBedCenterAngle = EEPROM::ElbowBedCenterAngle();			// Kusuma SCARA
 	ScaraForwardKinematics(ShoulderBedCenterAngle, ElbowBedCenterAngle, BedCenterXpos, BedCenterYpos);
