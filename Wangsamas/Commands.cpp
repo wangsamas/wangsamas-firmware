@@ -1459,7 +1459,7 @@ PARALEL SCARA
 					d = 2 * Printer::ForearmLength * sin(b/2);
 					float e = (com->X * com->X - c * c - d * d)/(2 * c * d);
 					float f = Printer::deltaAPosXSteps * Printer::invaxisStepsPerUnit[X_AXIS] + (a - b)/2 - acos(e);
-					Printer::ElbowMaxAngle = Printer::ElbowMaxAngle - Printer::deltaAPosYSteps * Printer::invaxisStepsPerUnit[Y_AXIS] + f * 57.29577951472;
+					Printer::ElbowMaxAngle = Printer::ElbowMaxAngle - Printer::deltaAPosYSteps * Printer::invaxisStepsPerUnit[Y_AXIS] - f * 57.29577951472;
 				}
 #endif
 			}
